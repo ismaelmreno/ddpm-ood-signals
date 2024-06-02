@@ -3,11 +3,6 @@
 Perform reconstruction-based out-of-distribution detection with DDPMs.
 </p>
 
-<p align="center">
-  <img width="800" height="300" src="https://user-images.githubusercontent.com/7947315/233470531-df6437d7-e277-4147-96a0-6aa354cf2ef4.svg">
-</p>
-
-
 ## Intro
 
 This codebase contains the code to perform unsupervised out-of-distribution detection with diffusion models.
@@ -21,40 +16,49 @@ It is based on work published in [1] and [2].
 ## Setup
 
 ### Install
-Create a fresh virtualenv (this codebase was developed and tested with Python 3.8) and then install the required packages:
+
+Create a fresh virtualenv (this codebase was developed and tested with Python 3.8) and then install the required
+packages:
 
 ```pip install -r requirements.txt```
 
 You can also build the docker image
+
 ```bash
 cd docker/
 bash create_docker_image.sh
 ```
 
 ### Setup paths
+
 Select where you want your data and model outputs stored.
+
 ```bash
-data_root=/home/ismael/TFM/ddpmdata
-output_root=/home/ismael/TFM/ddpmoutput
+data_root=/home/ismael/TFM/rfchallenge2/
+output_root=/home/ismael/TFM/rfmodelsoutput/
 ```
 
 ## Run with DDPM
-We'll use the example of FashionMNIST as an in-distribution dataset and [SVHN,CIFAR10, CelebA] as out-of-distribution datasets.
+
+We'l use signal datasets ...
+
 ### Download and process datasets
-```bash
-python src/data/get_computer_vision_datasets.py --data_root=${data_root}
-```
-N.B. If the error "The daily quota of the file img_align_celeba.zip is exceeded and it can't be downloaded" is thrown,
-you need to download these files manually from the GDrive and place them in `${data_root}/CelebA/raw/`,
-[see here](https://github.com/pytorch/vision/issues/1920#issuecomment-852237902). You can then run
 
 ```bash
-python get_datasets.py --data_root=${data_root} --download_celeba=False
+wget -O  ${data_root}/dataset.zip "https://www.dropbox.com/scl/fi/zlvgxlhp8het8j8swchgg/dataset.zip?rlkey=4rrm2eyvjgi155ceg8gxb5fc4&dl=0"
+unzip  ${data_root}/dataset.zip -d ${data_root}
+rm ${data_root}/dataset.zip
 ```
 
-To use your own data, you just need to provide separate csvs containing paths for the train/val/test splits.
+The following code will reshape and trim the signal datasets to the desired length and number of samples, as well as
+unpacking real and imaginary parts of the signal into two separate channels.
+
+```bash
+python src/data/signal_trim_and_unpack.py --data_root=${data_root}/dataset --num_samples=1000 --trim_length=3000 --new_data_root=${data_root}/processed_dataset
+```
 
 ### Train models
+
 Examples here use FashionMNIST as the in-distribution dataset. Commands for other datasets are given
 in [README_additional.md](README_additional.md).
 
@@ -74,6 +78,7 @@ python train_ddpm.py \
 --beta_schedule=scaled_linear \
 
 You can track experiments in tensorboard
+
 ```bash
 tensorboard --logdir=${output_root}
 ```
@@ -113,19 +118,20 @@ python reconstruct.py \
 --run_in=1 \
 --run_out=1
 ```
+
 The arg `inference_skip_factor` controls the amount of t starting points that are skipped during reconstruction.
 This table shows the relationship between values of `inference_skip_factor` and the number of reconstructions, as needed
 to reproduce results in Supplementary Table 4 (for max_t=1000).
 
-| **inference_skip_factor:** | 1   | 2   | 3   | 4   | 5   | 8   | 16  | 32  | 64  |
-|------------------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-| **num_reconstructions:**   | 100 | 50  | 34  | 25  | 20  | 13  | 7   | 4   | 2   |
+| **inference_skip_factor:** | 1   | 2  | 3  | 4  | 5  | 8  | 16 | 32 | 64 |
+|----------------------------|-----|----|----|----|----|----|----|----|----|
+| **num_reconstructions:**   | 100 | 50 | 34 | 25 | 20 | 13 | 7  | 4  | 2  |
 
 N.B. For a quicker run, you can choose to only reconstruct a subset of the validation set with e.g. `--first_n_val=1000`
 or a subset of the in/out datasets with `--first_n=1000`
 
-
 ### Classify samples as OOD
+
 ```bash
 python ood_detection.py \
 --output_dir=${output_root} \
@@ -133,14 +139,21 @@ python ood_detection.py \
 ```
 
 ## Run with LDM
-We'll use the 3D Medical Decathlon Dataset here. In this example we'll use the BraTS dataset as the in-distribution dataset,
+
+We'll use the 3D Medical Decathlon Dataset here. In this example we'll use the BraTS dataset as the in-distribution
+dataset,
 and the other 9 datasets as out-of-distribution datasets.
 
 ### Download and process datasets
-```bash
-python src/data/get_decathlon_datasets.py --data_root=${data_root}/Decathlon
-```
+
+[//]: # (```bash)
+
+[//]: # (python src/data/get_decathlon_datasets.py --data_root=${data_root}/Decathlon)
+
+[//]: # (```)
+
 ### Train VQVAE
+
 ```bash
 python train_vqvae.py  \
 --output_dir=${output_root} \
@@ -164,9 +177,12 @@ python train_vqvae.py  \
 --image_roi=[160,160,128] \
 --image_size=128
 ```
+
 The code is DistributedDataParallel (DDP) compatible. To train on e.g. 2 GPUs run with
 `torchrun --nproc_per_node=2 --nnodes=1 --node_rank=0 train_vqvae.py`
+
 ### Train LDM
+
 ```bash
 python train_ddpm.py \
   --output_dir=${output_root} \
@@ -190,7 +206,9 @@ python train_ddpm.py \
   --image_roi=[160,160,128] \
   --image_size=128
 ```
+
 ### Reconstruct data
+
 ```bash
 python reconstruct.py \
   --output_dir=${output_root} \
@@ -216,18 +234,24 @@ python reconstruct.py \
   --run_in=1 \
   --run_out=1
 ````
+
 ### Classify samples as OOD
+
 ```bash
 python ood_detection.py \
 --output_dir=${output_root} \
 --model_name=ddpm_decathlon
 ```
-## Acknowledgements
-Built with [MONAI Generative](https://github.com/Project-MONAI/GenerativeModels) and [MONAI](https://github.com/Project-MONAI/MONAI).
 
+## Acknowledgements
+
+Built with [MONAI Generative](https://github.com/Project-MONAI/GenerativeModels)
+and [MONAI](https://github.com/Project-MONAI/MONAI).
 
 ## Citations
+
 If you use this codebase, please cite
+
 ```bib
 @InProceedings{Graham_2023_CVPR,
     author    = {Graham, Mark S. and Pinaya, Walter H.L. and Tudosiu, Petru-Daniel and Nachev, Parashkev and Ourselin, Sebastien and Cardoso, Jorge},
