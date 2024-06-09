@@ -22,12 +22,16 @@ packages:
 
 ```pip install -r requirements.txt```
 
-You can also build the docker image
+[//]: # (You can also build the docker image)
 
-```bash
-cd docker/
-bash create_docker_image.sh
-```
+[//]: # ()
+[//]: # (```bash)
+
+[//]: # (cd docker/)
+
+[//]: # (bash create_docker_image.sh)
+
+[//]: # (```)
 
 ### Setup paths
 
@@ -65,13 +69,14 @@ in [README_additional.md](README_additional.md).
 ```bash
 python train_ddpm.py \
 --output_dir=${output_root} \
---model_name=test2 \
---training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data.h5 \
---validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data.h5 \
---n_epochs=300 \
+--model_name=test3 \
+--model_type=small \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
+--n_epochs=500 \
 --beta_start=0.0015 \
 --beta_end=0.0195 \
---batch_size=5 \
+--batch_size=40 \
 --quick_test=0
 ```
 
@@ -89,14 +94,14 @@ The code is DistributedDataParallel (DDP) compatible. To train on e.g. 2 GPUs:
 torchrun --nproc_per_node=2 --nnodes=1 --node_rank=0 \
 train_ddpm.py \
 --output_dir=${output_root} \
---model_name=fashionmnist \
---training_h5file=${data_root}/data_splits/FashionMNIST_train.csv \
---validation_h5file=${data_root}/data_splits/FashionMNIST_val.csv \
---is_grayscale=1 \
---n_epochs=300 \
---beta_schedule=scaled_linear \
+--model_name=test3 \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
+--n_epochs=30 \
 --beta_start=0.0015 \
---beta_end=0.0195
+--beta_end=0.0195 \
+--batch_size=5 \
+--quick_test=0
 ```
 
 ### Reconstruct data
@@ -104,12 +109,10 @@ train_ddpm.py \
 ```bash
 python reconstruct.py \
 --output_dir=${output_root} \
---model_name=fashionmnist \
---validation_h5file=${data_root}/data_splits/FashionMNIST_val.csv \
---in_ids=${data_root}/data_splits/FashionMNIST_test.csv \
---out_ids=${data_root}/data_splits/MNIST_test.csv,${data_root}/data_splits/FashionMNIST_vflip_test.csv,${data_root}/data_splits/FashionMNIST_hflip_test.csv \
---is_grayscale=1 \
---beta_schedule=scaled_linear \
+--model_name=test3 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
+--in_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
+--out_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
 --beta_start=0.0015 \
 --beta_end=0.0195 \
 --num_inference_steps=100 \

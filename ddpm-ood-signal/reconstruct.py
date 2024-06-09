@@ -7,21 +7,16 @@ from src.trainers import Reconstruct
 def parse_args():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("--in_channels", type=int, default=2, help="Number of input channels.")
+    parser.add_argument("--dataset_name", default="dataset", help="Name of dataset in h5 file.")
     parser.add_argument("--seed", type=int, default=2, help="Random seed to use.")
     parser.add_argument("--output_dir", help="Location for models.")
     parser.add_argument("--model_name", help="Name of model.")
-    parser.add_argument("--validation_ids", help="Location of file with validation ids.")
+    parser.add_argument("--validation_h5file", help="Location of file with validation ids.")
     parser.add_argument("--in_ids", help="Location of file with inlier ids.")
     parser.add_argument("--out_ids", help="List of location of file with outlier ids.")
     parser.add_argument(
-        "--spatial_dimension", default=2, type=int, help="Dimension of images: 2d or 3d."
-    )
-    parser.add_argument("--image_size", default=None, help="Resize images.")
-    parser.add_argument(
-        "--image_roi",
-        default=None,
-        help="Specify central ROI crop of inputs, as a tuple, with -1 to not crop a dimension.",
-        type=ast.literal_eval,
+        "--spatial_dimension", default=1, type=int, help="Dimension of images: 2d or 3d."
     )
     parser.add_argument(
         "--latent_pad",
@@ -53,7 +48,7 @@ def parse_args():
     )
     parser.add_argument(
         "--beta_schedule",
-        default="linear",
+        default="linear_beta",
         help="Linear or scaled linear",
     )
     parser.add_argument(
@@ -88,7 +83,7 @@ def parse_args():
     )
 
     # inference param
-    parser.add_argument("--batch_size", type=int, default=256, help="Batch size.")
+    parser.add_argument("--batch_size", type=int, default=5, help="Batch size.")
     parser.add_argument(
         "--augmentation",
         type=int,
@@ -118,7 +113,6 @@ def parse_args():
         help="Select a specific checkpoint to evaluate on.",
     )
     parser.add_argument("--drop_last", default=False, help="Drop last non-complete batch..")
-    parser.add_argument("--is_grayscale", type=int, default=0, help="Is data grayscale.")
     parser.add_argument("--run_val", type=int, default=1, help="Run reconstructions on val set.")
     parser.add_argument("--run_in", type=int, default=1, help="Run reconstructions on in set.")
     parser.add_argument("--run_out", type=int, default=1, help="Run reconstructions on out set.")

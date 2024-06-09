@@ -1,132 +1,118 @@
+import torch
+import torch.nn as nn
+
 from typing import Dict, Tuple
 
-import torch
-from lpips import LPIPS
+
+class Simple1DPerceptualNet(nn.Module):
+    def __init__(self, in_channels):
+        super(Simple1DPerceptualNet, self).__init__()
+        self.layers = nn.Sequential(
+            nn.Conv1d(in_channels, 8, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv1d(8, 16, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv1d(16, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.AdaptiveAvgPool1d(1)  # Global Average Pooling
+        )
+
+    def forward(self, x):
+        return self.layers(x)
 
 
-# It is a torch.nn.Module to be able to move the network used for the perceptual loss to the desired compute devices
-class PerceptualLoss(torch.nn.Module):
-    """
-    Perceptual loss based on the lpips library. The 3D implementation is based on a 2.5D approach where we batchify
-    every spatial dimension one after another so we obtain better spatial consistency. There is also a pixel
-    component as well.
+class Simple2DPerceptualNet(nn.Module):
+    def __init__(self, in_channels):
+        super(Simple2DPerceptualNet, self).__init__()
+        self.layers = nn.Sequential(
+            nn.Conv2d(in_channels, 8, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(8, 16, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(16, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.AdaptiveAvgPool2d(1)  # Global Average Pooling
+        )
 
-    Args:
-        dimensions (int): Dimensions: number of spatial dimensions.
-        include_pixel_loss (bool): If the loss includes the pixel component as well
-        is_fake_3d (bool): Whether we use 2.5D approach for a 3D perceptual loss
-        drop_ratio (float): How many, as a ratio, slices we drop in the 2.5D approach
-        lpips_kwargs (Dict): Dictionary containing key words arguments that will be passed to the LPIPS constructor.
-            Defaults to: { 'pretrained': True, 'net': 'alex', 'version': '0.1', 'lpips': True, 'spatial': False,
-            'pnet_rand': False,  'pnet_tune': False, 'use_dropout': True, 'model_path': None, 'eval_mode': True,
-            'verbose': True}
-        lpips_normalize (bool): Whether or not the input needs to be renormalised from [0,1] to [-1,1]
+    def forward(self, x):
+        return self.layers(x)
 
-    Attributes:
-        self.dimensions (int): Number of spatial dimensions.
-        self.include_pixel_loss (bool): If the loss includes the pixel component as well
-                self.lpips_kwargs (Dict): Dictionary containing key words arguments that will be passed to the LPIPS
-            constructor function call.
-        self.fake_3D_views (List[Tuple[Tuple[int,int,int,int,int],Tuple[int,int,int]]]): List of pairs for the 2.5D
-            approach. The first element in every tuple is the required permutation for an axis and the second one
-            hold the indices of the input image that dictate the shape of the bachified tensor.
-        self.keep_ratio (float): Ratio of how many elements of the every 2.5D view we are using to calculate the
-            loss. This allows for a memory & iteration speed vs information flow compromise.
-        self.lpips_normalize (bool): Whether or not we renormalize from [0,1] to [-1,1]
-        self.perceptual_function (Callable): Function that calculates the perceptual loss. For 2D and 2.5D is based
-            LPIPS. 3D is not implemented yet.
-        self.perceptual_factor (float): Scaling factor of the perceptual component of loss
-        self.summaries (Dict): Dictionary containing scalar summaries to be logged in TensorBoard
 
-    References:
-        [1] Zhang, R., Isola, P., Efros, A.A., Shechtman, E. and Wang, O., 2018.
-        The unreasonable effectiveness of deep features as a perceptual metric.
-        In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 586-595).
-    """
+class Simple3DPerceptualNet(nn.Module):
+    def __init__(self, in_channels):
+        super(Simple3DPerceptualNet, self).__init__()
+        self.layers = nn.Sequential(
+            nn.Conv3d(in_channels, 8, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv3d(8, 16, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv3d(16, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.AdaptiveAvgPool3d(1)  # Global Average Pooling
+        )
 
+    def forward(self, x):
+        return self.layers(x)
+
+
+class PerceptualLoss(nn.Module):
     def __init__(
             self,
             dimensions: int,
+            in_channels: int,
             include_pixel_loss: bool = True,
             is_fake_3d: bool = True,
             drop_ratio: float = 0.0,
             fake_3d_axis: Tuple[int, ...] = (2, 3, 4),
-            lpips_kwargs: Dict = None,
             lpips_normalize: bool = True,
             spatial: bool = False,
     ):
         super(PerceptualLoss, self).__init__()
 
-        if not (dimensions in [2, 3]):
-            raise NotImplementedError("Perceptual loss is implemented only in 2D and 3D.")
+        if not (dimensions in [1, 2, 3]):
+            raise NotImplementedError("Perceptual loss is implemented only in 1D, 2D, and 3D.")
 
         if dimensions == 3 and is_fake_3d is False:
             raise NotImplementedError("True 3D perceptual loss is not implemented yet.")
 
         self.dimensions = dimensions
+        self.in_channels = in_channels
         self.include_pixel_loss = include_pixel_loss
-        self.lpips_kwargs = (
-            {
-                "pretrained":  True,
-                "net":         "alex",
-                "version":     "0.1",
-                "lpips":       True,
-                "spatial":     spatial,
-                "pnet_rand":   False,
-                "pnet_tune":   False,
-                "use_dropout": True,
-                "model_path":  None,
-                "eval_mode":   True,
-                "verbose":     False,
-            }
-            if lpips_kwargs is None
-            else lpips_kwargs
-        )
-        # Here we store the permutations of the 5D tensor where we merge different axis into the batch dimension
-        # and use the rest as spatial dimensions, we allow
-        self.fake_3D_views = (
-            (
-                    []
-                    + ([((0, 2, 1, 3, 4), (1, 3, 4))] if 2 in fake_3d_axis else [])
-                    + ([((0, 3, 1, 2, 4), (1, 2, 4))] if 3 in fake_3d_axis else [])
-                    + ([((0, 4, 1, 2, 3), (1, 2, 3))] if 4 in fake_3d_axis else [])
-            )
-            if is_fake_3d
-            else None
-        )
-        # In case of being memory constraint for the 2.5D approach it allows to randomly drop some slices
-        self.keep_ratio = 1 - drop_ratio
         self.lpips_normalize = lpips_normalize
-        self.perceptual_function = (
-            LPIPS(**self.lpips_kwargs) if self.dimensions == 2 or is_fake_3d else None
-        )
+
+        # Define the perceptual function based on dimensions
+        if self.dimensions == 1:
+            self.perceptual_function = Simple1DPerceptualNet(in_channels)
+        elif self.dimensions == 2:
+            self.perceptual_function = Simple2DPerceptualNet(in_channels)
+        else:  # self.dimensions == 3
+            self.perceptual_function = Simple3DPerceptualNet(in_channels)
+
         self.perceptual_factor = 1
 
     def forward(self, y: torch.Tensor, y_pred: torch.Tensor) -> torch.Tensor:
-        # Unpacking elements
         y = y.float()
         y_pred = y_pred.float()
 
-        if self.dimensions == 3 and self.fake_3D_views:
-            loss = torch.zeros(())
+        if self.lpips_normalize:
+            y = (y - 0.5) * 2  # Assuming input is in [0, 1]
+            y_pred = (y_pred - 0.5) * 2  # Assuming input is in [0, 1]
 
-            for idx, fake_views in enumerate(self.fake_3D_views):
-                loss = (
-                        self._calculate_fake_3d_loss(
-                            y=y,
-                            y_pred=y_pred,
-                            permute_dims=fake_views[0],
-                            view_dims=fake_views[1],
-                        )
-                        * self.perceptual_factor
-                )
-        else:
-            loss = (
-                    self.perceptual_function.forward(y, y_pred, normalize=self.lpips_normalize)
-                    * self.perceptual_factor
-            )
+        batch_size = y.shape[0]
 
-        return loss
+        # Calculate perceptual loss for each item in the batch
+        losses = torch.zeros(batch_size, device=y.device)
+
+        for i in range(batch_size):
+            y_i = y[i].unsqueeze(0)  # Shape: (1, C, L) for 1D, (1, C, H, W) for 2D, (1, C, D, H, W) for 3D
+            y_pred_i = y_pred[i].unsqueeze(0)
+
+            y_features = self.perceptual_function(y_i)
+            y_pred_features = self.perceptual_function(y_pred_i)
+
+            losses[i] = nn.functional.mse_loss(y_features, y_pred_features)
+
+        return losses * self.perceptual_factor
 
     def _calculate_fake_3d_loss(
             self,
@@ -135,22 +121,6 @@ class PerceptualLoss(torch.nn.Module):
             permute_dims: Tuple[int, int, int, int, int],
             view_dims: Tuple[int, int, int],
     ):
-        """
-        Calculating perceptual loss after one spatial axis is batchified according to permute dims and
-        we drop random slices as per self.keep_ratio.
-
-        Args:
-            y (torch.Tensor): Ground truth images
-            y_pred (torch.Tensor): Predictions
-            permute_dims (Tuple[int,int,int,int,int]): The order in which the permutation happens where the first
-                to newly permuted dimensions are going to become the batch dimension
-            view_dims (Tuple[int,int,int]): The channel dimension and two spatial dimensions that are being kept
-                after the permutation.
-
-        Returns:
-            torch.Tensor: perceptual loss value on the given axis
-        """
-        # Reshaping the ground truth and prediction to be considered 2D
         y_slices = (
             y.permute(*permute_dims)
             .contiguous()
@@ -168,20 +138,16 @@ class PerceptualLoss(torch.nn.Module):
             )
         )
 
-        # Subsampling in case we are memory constrained
         indices = torch.randperm(y_pred_slices.shape[0], device=y_pred_slices.device)[
                   : int(y_pred_slices.shape[0] * self.keep_ratio)
                   ]
 
-        y_pred_slices = y_pred_slices.as_tensor()[indices]
-        y_slices = y_slices.as_tensor()[indices]
+        y_pred_slices = y_pred_slices[indices]
+        y_slices = y_slices[indices]
 
-        # Calculating the 2.5D perceptual loss
-        p_loss = torch.mean(
-            self.perceptual_function.forward(
-                y_slices, y_pred_slices, normalize=self.lpips_normalize
-            )
-        )
+        y_features = self.perceptual_function(y_slices.unsqueeze(1))
+        y_pred_features = self.perceptual_function(y_pred_slices.unsqueeze(1))
+        p_loss = nn.functional.mse_loss(y_features, y_pred_features)
 
         return p_loss
 
@@ -193,5 +159,4 @@ class PerceptualLoss(torch.nn.Module):
 
     def set_perceptual_factor(self, perceptual_factor: float) -> float:
         self.perceptual_factor = perceptual_factor
-
         return self.get_perceptual_factor()
