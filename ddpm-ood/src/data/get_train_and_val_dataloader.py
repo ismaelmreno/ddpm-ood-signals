@@ -5,7 +5,6 @@ from monai.data import CacheDataset, Dataset, ThreadDataLoader, partition_datase
 
 
 def get_data_dicts(ids_path: str, shuffle: bool = False, first_n=False):
-
     """Get data dicts for data loaders."""
     df = pd.read_csv(ids_path, sep=",")
     if shuffle:
@@ -34,22 +33,22 @@ def get_data_dicts(ids_path: str, shuffle: bool = False, first_n=False):
 
 
 def get_training_data_loader(
-    batch_size: int,
-    training_ids: str,
-    validation_ids: str,
-    only_val: bool = False,
-    augmentation: bool = True,
-    drop_last: bool = False,
-    num_workers: int = 8,
-    num_val_workers: int = 3,
-    cache_data=True,
-    first_n=None,
-    is_grayscale=False,
-    add_vflip=False,
-    add_hflip=False,
-    image_size=None,
-    image_roi=None,
-    spatial_dimension=2,
+        batch_size: int,
+        training_ids: str,
+        validation_ids: str,
+        only_val: bool = False,
+        augmentation: bool = True,
+        drop_last: bool = False,
+        num_workers: int = 8,
+        num_val_workers: int = 3,
+        cache_data=True,
+        first_n=None,
+        is_grayscale=False,
+        add_vflip=False,
+        add_hflip=False,
+        image_size=None,
+        image_roi=None,
+        spatial_dimension=2,
 ):
     # Define transformations
     resize_transform = (

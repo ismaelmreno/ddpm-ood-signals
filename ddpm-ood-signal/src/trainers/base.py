@@ -61,7 +61,7 @@ class BaseTrainer:
             ddpm_channels = self.vqvae_config["embedding_dim"]
         else:
             self.vqvae_model = PassthroughVQVAE()
-            ddpm_channels = 2 # 2 channels for signal data
+            ddpm_channels = 2  # 2 channels for signal data
         if args.model_type == "small":
             self.model = DiffusionModelUNet(
                 spatial_dims=args.spatial_dimension,

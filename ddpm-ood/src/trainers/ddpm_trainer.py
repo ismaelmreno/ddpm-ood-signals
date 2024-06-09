@@ -51,9 +51,9 @@ class DDPMTrainer(BaseTrainer):
 
             if args.checkpoint_every != 0 and (epoch + 1) % args.checkpoint_every == 0:
                 self.save_checkpoint(
-                    self.run_dir / f"checkpoint_{epoch+1}.pth",
+                    self.run_dir / f"checkpoint_{epoch + 1}.pth",
                     epoch,
-                    save_message=f"Saving checkpoint at epoch {epoch+1}",
+                    save_message=f"Saving checkpoint at epoch {epoch + 1}",
                 )
 
             if (epoch + 1) % args.eval_freq == 0:

@@ -28,7 +28,7 @@ def download_data(data_root):
             dataset_list = [item["image"] for item in data_list if item["class_name"] == dataset]
             save_list_as_csv(
                 dataset_list,
-                splits_dir / f"{dataset}_{split.replace('ing','').replace('idation','')}.csv",
+                splits_dir / f"{dataset}_{split.replace('ing', '').replace('idation', '')}.csv",
             )
         print("debug")
 

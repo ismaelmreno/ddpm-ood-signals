@@ -45,15 +45,15 @@ class PerceptualLoss(torch.nn.Module):
     """
 
     def __init__(
-        self,
-        dimensions: int,
-        include_pixel_loss: bool = True,
-        is_fake_3d: bool = True,
-        drop_ratio: float = 0.0,
-        fake_3d_axis: Tuple[int, ...] = (2, 3, 4),
-        lpips_kwargs: Dict = None,
-        lpips_normalize: bool = True,
-        spatial: bool = False,
+            self,
+            dimensions: int,
+            include_pixel_loss: bool = True,
+            is_fake_3d: bool = True,
+            drop_ratio: float = 0.0,
+            fake_3d_axis: Tuple[int, ...] = (2, 3, 4),
+            lpips_kwargs: Dict = None,
+            lpips_normalize: bool = True,
+            spatial: bool = False,
     ):
         super(PerceptualLoss, self).__init__()
 
@@ -67,17 +67,17 @@ class PerceptualLoss(torch.nn.Module):
         self.include_pixel_loss = include_pixel_loss
         self.lpips_kwargs = (
             {
-                "pretrained": True,
-                "net": "alex",
-                "version": "0.1",
-                "lpips": True,
-                "spatial": spatial,
-                "pnet_rand": False,
-                "pnet_tune": False,
+                "pretrained":  True,
+                "net":         "alex",
+                "version":     "0.1",
+                "lpips":       True,
+                "spatial":     spatial,
+                "pnet_rand":   False,
+                "pnet_tune":   False,
                 "use_dropout": True,
-                "model_path": None,
-                "eval_mode": True,
-                "verbose": False,
+                "model_path":  None,
+                "eval_mode":   True,
+                "verbose":     False,
             }
             if lpips_kwargs is None
             else lpips_kwargs
@@ -86,10 +86,10 @@ class PerceptualLoss(torch.nn.Module):
         # and use the rest as spatial dimensions, we allow
         self.fake_3D_views = (
             (
-                []
-                + ([((0, 2, 1, 3, 4), (1, 3, 4))] if 2 in fake_3d_axis else [])
-                + ([((0, 3, 1, 2, 4), (1, 2, 4))] if 3 in fake_3d_axis else [])
-                + ([((0, 4, 1, 2, 3), (1, 2, 3))] if 4 in fake_3d_axis else [])
+                    []
+                    + ([((0, 2, 1, 3, 4), (1, 3, 4))] if 2 in fake_3d_axis else [])
+                    + ([((0, 3, 1, 2, 4), (1, 2, 4))] if 3 in fake_3d_axis else [])
+                    + ([((0, 4, 1, 2, 3), (1, 2, 3))] if 4 in fake_3d_axis else [])
             )
             if is_fake_3d
             else None
@@ -112,28 +112,28 @@ class PerceptualLoss(torch.nn.Module):
 
             for idx, fake_views in enumerate(self.fake_3D_views):
                 loss = (
-                    self._calculate_fake_3d_loss(
-                        y=y,
-                        y_pred=y_pred,
-                        permute_dims=fake_views[0],
-                        view_dims=fake_views[1],
-                    )
-                    * self.perceptual_factor
+                        self._calculate_fake_3d_loss(
+                            y=y,
+                            y_pred=y_pred,
+                            permute_dims=fake_views[0],
+                            view_dims=fake_views[1],
+                        )
+                        * self.perceptual_factor
                 )
         else:
             loss = (
-                self.perceptual_function.forward(y, y_pred, normalize=self.lpips_normalize)
-                * self.perceptual_factor
+                    self.perceptual_function.forward(y, y_pred, normalize=self.lpips_normalize)
+                    * self.perceptual_factor
             )
 
         return loss
 
     def _calculate_fake_3d_loss(
-        self,
-        y: torch.Tensor,
-        y_pred: torch.Tensor,
-        permute_dims: Tuple[int, int, int, int, int],
-        view_dims: Tuple[int, int, int],
+            self,
+            y: torch.Tensor,
+            y_pred: torch.Tensor,
+            permute_dims: Tuple[int, int, int, int, int],
+            view_dims: Tuple[int, int, int],
     ):
         """
         Calculating perceptual loss after one spatial axis is batchified according to permute dims and
@@ -170,8 +170,8 @@ class PerceptualLoss(torch.nn.Module):
 
         # Subsampling in case we are memory constrained
         indices = torch.randperm(y_pred_slices.shape[0], device=y_pred_slices.device)[
-            : int(y_pred_slices.shape[0] * self.keep_ratio)
-        ]
+                  : int(y_pred_slices.shape[0] * self.keep_ratio)
+                  ]
 
         y_pred_slices = y_pred_slices.as_tensor()[indices]
         y_slices = y_slices.as_tensor()[indices]

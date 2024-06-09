@@ -21,7 +21,7 @@ def parse_args():
         "--latent_pad",
         default=None,
         help="Specify padding to apply to a latent, sometimes necessary to allow the DDPM U-net to work. Supply as a "
-        "tuple following the 'pad' argument of torch.nn.functional.pad",
+             "tuple following the 'pad' argument of torch.nn.functional.pad",
         type=ast.literal_eval,
     )
     # model params

@@ -195,11 +195,11 @@ class Reconstruct(BaseTrainer):
 
                         results.append(
                             {
-                                "filename": stem,
-                                "type": dataset_name,
-                                "t": t_start.item(),
+                                "filename":              stem,
+                                "type":                  dataset_name,
+                                "t":                     t_start.item(),
                                 "perceptual_difference": perceptual_difference[b].item(),
-                                "mse": mse_metric[b].item(),
+                                "mse":                   mse_metric[b].item(),
                             }
                         )
                     # plot
@@ -231,9 +231,9 @@ class Reconstruct(BaseTrainer):
                         plt.show()
                 t2 = time.time()
                 if dist.is_initialized():
-                    print(f"{dist.get_rank()}: Took {t2-t1}s for a batch size of {images.shape[0]}")
+                    print(f"{dist.get_rank()}: Took {t2 - t1}s for a batch size of {images.shape[0]}")
                 else:
-                    print(f"Took {t2-t1}s for a batch size of {images.shape[0]}")
+                    print(f"Took {t2 - t1}s for a batch size of {images.shape[0]}")
         # gather results from all processes
         if dist.is_initialized():
             all_results = [None] * dist.get_world_size()

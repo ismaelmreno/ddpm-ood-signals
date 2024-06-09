@@ -55,7 +55,7 @@ def download_data(data_root):
             save_list_as_csv(
                 dataset_list,
                 splits_dir
-                / f"medmnist3d_{task}_{split.replace('ing','').replace('idation','')}.csv",
+                / f"medmnist3d_{task}_{split.replace('ing', '').replace('idation', '')}.csv",
             )
 
 

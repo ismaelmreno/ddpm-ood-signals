@@ -39,7 +39,7 @@ def create_train_test_splits(data_root):
         train_list, val_list = train_test_split(train_and_val_list, test_size=0.05, random_state=42)
         test_list = list((numpy_data_root / "test").glob("*"))
         for split_name, data_split in zip(
-            ["train", "val", "test"], [train_list, val_list, test_list]
+                ["train", "val", "test"], [train_list, val_list, test_list]
         ):
             save_list_as_csv(data_split, splits_dir / f"{dataset}_{split_name}.csv")
 

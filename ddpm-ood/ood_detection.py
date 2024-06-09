@@ -157,8 +157,8 @@ def main(args):
             )
             results_df = results_df.merge(results_df_val_agg, on=["t"], how="left")
             results_df[f"z_score_{target}"] = (
-                results_df[target] - results_df[f"val_mean_{target}"]
-            ) / results_df[f"val_std_{target}"]
+                                                      results_df[target] - results_df[f"val_mean_{target}"]
+                                              ) / results_df[f"val_std_{target}"]
 
         num_in_images = results_df.loc[results_df["type"] == "in"]["filename"].nunique()
         num_out_images = results_df.loc[results_df["type"] == "out"]["filename"].nunique()
@@ -166,7 +166,7 @@ def main(args):
         # Get an average Z-score for each input
         if plot_target == "mse+perceptual":
             results_df["z_score_mse+perceptual"] = (
-                results_df["z_score_mse"] + results_df["z_score_perceptual_difference"]
+                    results_df["z_score_mse"] + results_df["z_score_perceptual_difference"]
             )
             target = "z_score_mse+perceptual"
         else:

@@ -77,6 +77,7 @@ python ood_detection.py \
 --output_dir=${output_root} \
 --model_name=celeba
 ```
+
 ### SVHN
 
 ```bash

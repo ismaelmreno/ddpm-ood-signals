@@ -47,7 +47,7 @@ def download_data(data_root):
             print(f"{task} {split} with {len(dataset_list)} images")
             save_list_as_csv(
                 dataset_list,
-                splits_dir / f"{task}_{split.replace('ing','').replace('idation','')}.csv",
+                splits_dir / f"{task}_{split.replace('ing', '').replace('idation', '')}.csv",
             )
 
 

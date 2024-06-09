@@ -167,21 +167,21 @@ class BaseTrainer:
         if self.ddp and dist.get_rank() == 0:
             # if DDP save a state dict that can be loaded by non-parallel models
             checkpoint = {
-                "epoch": epoch + 1,  # save epoch+1, so we resume on the next epoch
-                "global_step": self.global_step,
-                "model_state_dict": self.model.module.state_dict(),
+                "epoch":                epoch + 1,  # save epoch+1, so we resume on the next epoch
+                "global_step":          self.global_step,
+                "model_state_dict":     self.model.module.state_dict(),
                 "optimizer_state_dict": self.optimizer.state_dict(),
-                "best_loss": self.best_loss,
+                "best_loss":            self.best_loss,
             }
             print(save_message)
             torch.save(checkpoint, path)
         if not self.ddp:
             checkpoint = {
-                "epoch": epoch + 1,  # save epoch+1, so we resume on the next epoch
-                "global_step": self.global_step,
-                "model_state_dict": self.model.state_dict(),
+                "epoch":                epoch + 1,  # save epoch+1, so we resume on the next epoch
+                "global_step":          self.global_step,
+                "model_state_dict":     self.model.state_dict(),
                 "optimizer_state_dict": self.optimizer.state_dict(),
-                "best_loss": self.best_loss,
+                "best_loss":            self.best_loss,
             }
             print(save_message)
             torch.save(checkpoint, path)

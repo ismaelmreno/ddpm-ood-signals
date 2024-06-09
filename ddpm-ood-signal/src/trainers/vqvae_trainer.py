@@ -50,21 +50,21 @@ class VQVAETrainer:
         # set up model
         self.spatial_dimension = args.spatial_dimension
         vqvae_args = {
-            "spatial_dims": args.spatial_dimension,
-            "in_channels": args.vqvae_in_channels,
-            "out_channels": args.vqvae_out_channels,
-            "num_res_layers": args.vqvae_num_res_layers,
+            "spatial_dims":          args.spatial_dimension,
+            "in_channels":           args.vqvae_in_channels,
+            "out_channels":          args.vqvae_out_channels,
+            "num_res_layers":        args.vqvae_num_res_layers,
             "downsample_parameters": args.vqvae_downsample_parameters,
-            "upsample_parameters": args.vqvae_upsample_parameters,
-            "num_channels": args.vqvae_num_channels,
-            "num_res_channels": args.vqvae_num_res_channels,
-            "num_embeddings": args.vqvae_num_embeddings,
-            "embedding_dim": args.vqvae_embedding_dim,
-            "decay": args.vqvae_decay,
-            "commitment_cost": args.vqvae_commitment_cost,
-            "epsilon": args.vqvae_epsilon,
-            "dropout": args.vqvae_dropout,
-            "ddp_sync": args.vqvae_ddp_sync,
+            "upsample_parameters":   args.vqvae_upsample_parameters,
+            "num_channels":          args.vqvae_num_channels,
+            "num_res_channels":      args.vqvae_num_res_channels,
+            "num_embeddings":        args.vqvae_num_embeddings,
+            "embedding_dim":         args.vqvae_embedding_dim,
+            "decay":                 args.vqvae_decay,
+            "commitment_cost":       args.vqvae_commitment_cost,
+            "epsilon":               args.vqvae_epsilon,
+            "dropout":               args.vqvae_dropout,
+            "ddp_sync":              args.vqvae_ddp_sync,
         }
         self.model = VQVAE(**vqvae_args)
         self.model.to(self.device)
@@ -162,21 +162,21 @@ class VQVAETrainer:
         if self.ddp and dist.get_rank() == 0:
             # if DDP save a state dict that can be loaded by non-parallel models
             checkpoint = {
-                "epoch": epoch + 1,  # save epoch+1, so we resume on the next epoch
-                "global_step": self.global_step,
-                "model_state_dict": self.model.module.state_dict(),
+                "epoch":                epoch + 1,  # save epoch+1, so we resume on the next epoch
+                "global_step":          self.global_step,
+                "model_state_dict":     self.model.module.state_dict(),
                 "optimizer_state_dict": self.optimizer.state_dict(),
-                "best_loss": self.best_loss,
+                "best_loss":            self.best_loss,
             }
             print(save_message)
             torch.save(checkpoint, path)
         if not self.ddp:
             checkpoint = {
-                "epoch": epoch + 1,  # save epoch+1, so we resume on the next epoch
-                "global_step": self.global_step,
-                "model_state_dict": self.model.state_dict(),
+                "epoch":                epoch + 1,  # save epoch+1, so we resume on the next epoch
+                "global_step":          self.global_step,
+                "model_state_dict":     self.model.state_dict(),
                 "optimizer_state_dict": self.optimizer.state_dict(),
-                "best_loss": self.best_loss,
+                "best_loss":            self.best_loss,
             }
             print(save_message)
             torch.save(checkpoint, path)
@@ -196,9 +196,9 @@ class VQVAETrainer:
 
             if args.checkpoint_every != 0 and (epoch + 1) % args.checkpoint_every == 0:
                 self.save_checkpoint(
-                    self.run_dir / f"checkpoint_{epoch+1}.pth",
+                    self.run_dir / f"checkpoint_{epoch + 1}.pth",
                     epoch,
-                    save_message=f"Saving checkpoint at epoch {epoch+1}",
+                    save_message=f"Saving checkpoint at epoch {epoch + 1}",
                 )
 
             if (epoch + 1) % args.eval_freq == 0:
@@ -241,11 +241,11 @@ class VQVAETrainer:
             else:
                 adv_weight = self.adv_weight
             total_generator_loss = (
-                recons_loss
-                + quantization_loss
-                + self.perceptual_weight * perceptual_loss
-                + jukebox_loss
-                + adv_weight * adversarial_loss
+                    recons_loss
+                    + quantization_loss
+                    + self.perceptual_weight * perceptual_loss
+                    + jukebox_loss
+                    + adv_weight * adversarial_loss
             )
 
             total_generator_loss.backward()
@@ -272,8 +272,8 @@ class VQVAETrainer:
             self.global_step += images.shape[0]
             progress_bar.set_postfix(
                 {
-                    "l1_loss": l1_loss / (epoch_step),
-                    "generator_loss": generator_epoch_loss / (epoch_step),
+                    "l1_loss":            l1_loss / (epoch_step),
+                    "generator_loss":     generator_epoch_loss / (epoch_step),
                     "discriminator_loss": discriminator_epoch_loss / (epoch_step),
                 }
             )
@@ -333,11 +333,11 @@ class VQVAETrainer:
                     logits_fake, target_is_real=True, for_discriminator=False
                 )
                 total_generator_loss = (
-                    recons_loss
-                    + quantization_loss
-                    + self.perceptual_weight * perceptual_loss
-                    + jukebox_loss
-                    + self.adv_weight * adversarial_loss
+                        recons_loss
+                        + quantization_loss
+                        + self.perceptual_weight * perceptual_loss
+                        + jukebox_loss
+                        + self.adv_weight * adversarial_loss
                 )
 
                 self.logger_val.add_scalar(
