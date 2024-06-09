@@ -37,8 +37,8 @@ class Reconstruct(BaseTrainer):
         # set up loaders
         self.val_loader = get_training_data_loader(
             batch_size=args.batch_size,
-            training_ids=args.validation_ids,
-            validation_ids=args.validation_ids,
+            training_ids=args.validation_h5file,
+            validation_ids=args.validation_h5file,
             augmentation=bool(args.augmentation),
             only_val=True,
             num_workers=args.num_workers,

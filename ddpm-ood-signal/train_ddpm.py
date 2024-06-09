@@ -10,18 +10,13 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=2, help="Random seed to use.")
     parser.add_argument("--output_dir", help="Location for models.")
     parser.add_argument("--model_name", help="Name of model.")
-    parser.add_argument("--training_ids", help="Location of file with training ids.")
-    parser.add_argument("--validation_ids", help="Location of file with validation ids.")
+    parser.add_argument("--training_h5file", help="Location of training data.")
+    parser.add_argument("--validation_h5file", help="Location of validation data.")
+    parser.add_argument("--dataset_name", default="dataset", help="Name of dataset in h5 file.")
     parser.add_argument(
-        "--spatial_dimension", default=2, type=int, help="Dimension of images: 2d or 3d."
+        "--spatial_dimension", default=1, type=int, help="Dimension of images: 2d or 3d."
     )
-    parser.add_argument("--image_size", default=None, help="Resize images.")
-    parser.add_argument(
-        "--image_roi",
-        default=None,
-        help="Specify central ROI crop of inputs, as a tuple, with -1 to not crop a dimension.",
-        type=ast.literal_eval,
-    )
+
     parser.add_argument(
         "--latent_pad",
         default=None,
@@ -81,7 +76,7 @@ def parse_args():
         help="Use simplex instead of Gaussian noise.",
     )
     # training param
-    parser.add_argument("--batch_size", type=int, default=512, help="Training batch size.")
+    parser.add_argument("--batch_size", type=int, default=2, help="Training batch size.")
     parser.add_argument("--n_epochs", type=int, default=300, help="Number of epochs to train.")
     parser.add_argument(
         "--eval_freq",
@@ -89,14 +84,8 @@ def parse_args():
         default=10,
         help="Number of epochs to between evaluations.",
     )
-    parser.add_argument(
-        "--augmentation",
-        type=int,
-        default=1,
-        help="Use of augmentation, 1 (True) or 0 (False).",
-    )
 
-    parser.add_argument("--num_workers", type=int, default=8, help="Number of loader workers")
+    parser.add_argument("--num_workers", type=int, default=1, help="Number of loader workers")
     parser.add_argument(
         "--cache_data",
         type=int,
@@ -114,7 +103,6 @@ def parse_args():
         default=None,
         help="If resuming, the epoch number for a specific checkpoint to resume from. If not specified, defaults to the best checkpoint.",
     )
-    parser.add_argument("--is_grayscale", type=int, default=0, help="Is data grayscale.")
     parser.add_argument(
         "--quick_test",
         default=0,

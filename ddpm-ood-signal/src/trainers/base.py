@@ -6,12 +6,12 @@ from pathlib import Path
 import torch
 import torch.distributed as dist
 from generative.inferers import DiffusionInferer
-from generative.networks.nets import VQVAE, DiffusionModelUNet
+from generative.networks.nets import VQVAE
 from generative.networks.schedulers import DDPMScheduler
 from torch.cuda.amp import GradScaler
 from torch.nn.parallel import DistributedDataParallel
 
-from src.networks import PassthroughVQVAE
+from src.networks import PassthroughVQVAE, DiffusionModelUNet
 from src.utils.simplex_noise import Simplex_CLASS
 
 
@@ -61,16 +61,16 @@ class BaseTrainer:
             ddpm_channels = self.vqvae_config["embedding_dim"]
         else:
             self.vqvae_model = PassthroughVQVAE()
-            ddpm_channels = 1 if args.is_grayscale else 3
+            ddpm_channels = 2 # 2 channels for signal data
         if args.model_type == "small":
             self.model = DiffusionModelUNet(
                 spatial_dims=args.spatial_dimension,
                 in_channels=ddpm_channels,
                 out_channels=ddpm_channels,
-                num_channels=(128, 256, 256),
+                num_channels=(32, 32, 32),
                 attention_levels=(False, False, True),
                 num_res_blocks=1,
-                num_head_channels=256,
+                num_head_channels=1,
                 with_conditioning=False,
             ).to(self.device)
         elif args.model_type == "big":
@@ -121,7 +121,6 @@ class BaseTrainer:
         self.inferer = DiffusionInferer(self.scheduler)
         self.scaler = GradScaler()
         self.spatial_dimension = args.spatial_dimension
-        self.image_size = int(args.image_size) if args.image_size else args.image_size
         if args.latent_pad:
             self.do_latent_pad = True
             self.latent_pad = args.latent_pad
@@ -167,21 +166,21 @@ class BaseTrainer:
         if self.ddp and dist.get_rank() == 0:
             # if DDP save a state dict that can be loaded by non-parallel models
             checkpoint = {
-                "epoch": epoch + 1,  # save epoch+1, so we resume on the next epoch
-                "global_step": self.global_step,
-                "model_state_dict": self.model.module.state_dict(),
+                "epoch":                epoch + 1,  # save epoch+1, so we resume on the next epoch
+                "global_step":          self.global_step,
+                "model_state_dict":     self.model.module.state_dict(),
                 "optimizer_state_dict": self.optimizer.state_dict(),
-                "best_loss": self.best_loss,
+                "best_loss":            self.best_loss,
             }
             print(save_message)
             torch.save(checkpoint, path)
         if not self.ddp:
             checkpoint = {
-                "epoch": epoch + 1,  # save epoch+1, so we resume on the next epoch
-                "global_step": self.global_step,
-                "model_state_dict": self.model.state_dict(),
+                "epoch":                epoch + 1,  # save epoch+1, so we resume on the next epoch
+                "global_step":          self.global_step,
+                "model_state_dict":     self.model.state_dict(),
                 "optimizer_state_dict": self.optimizer.state_dict(),
-                "best_loss": self.best_loss,
+                "best_loss":            self.best_loss,
             }
             print(save_message)
             torch.save(checkpoint, path)

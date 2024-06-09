@@ -34,7 +34,7 @@ bash create_docker_image.sh
 Select where you want your data and model outputs stored.
 
 ```bash
-data_root=/home/ismael/TFM/rfchallenge2/
+data_root=/home/ismael/TFM/rfchallenge/
 output_root=/home/ismael/TFM/rfmodelsoutput/
 ```
 
@@ -54,7 +54,7 @@ The following code will reshape and trim the signal datasets to the desired leng
 unpacking real and imaginary parts of the signal into two separate channels.
 
 ```bash
-python src/data/signal_trim_and_unpack.py --data_root=${data_root}/dataset --num_samples=1000 --trim_length=3000 --new_data_root=${data_root}/processed_dataset
+python src/data/signal_trim_and_unpack.py --data_root=${data_root}/dataset --trim_length=3000 --new_data_root=${data_root}/dataset_processed
 ```
 
 ### Train models
@@ -65,14 +65,14 @@ in [README_additional.md](README_additional.md).
 ```bash
 python train_ddpm.py \
 --output_dir=${output_root} \
---model_name=fashionmnist \
---training_ids=${data_root}/data_splits/FashionMNIST_train.csv \
---validation_ids=${data_root}/data_splits/FashionMNIST_val.csv \
---is_grayscale=1 \
+--model_name=test2 \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data.h5 \
 --n_epochs=300 \
 --beta_start=0.0015 \
 --beta_end=0.0195 \
---batch_size=200 
+--batch_size=5 \
+--quick_test=0
 ```
 
 --beta_schedule=scaled_linear \
@@ -90,8 +90,8 @@ torchrun --nproc_per_node=2 --nnodes=1 --node_rank=0 \
 train_ddpm.py \
 --output_dir=${output_root} \
 --model_name=fashionmnist \
---training_ids=${data_root}/data_splits/FashionMNIST_train.csv \
---validation_ids=${data_root}/data_splits/FashionMNIST_val.csv \
+--training_h5file=${data_root}/data_splits/FashionMNIST_train.csv \
+--validation_h5file=${data_root}/data_splits/FashionMNIST_val.csv \
 --is_grayscale=1 \
 --n_epochs=300 \
 --beta_schedule=scaled_linear \
@@ -105,7 +105,7 @@ train_ddpm.py \
 python reconstruct.py \
 --output_dir=${output_root} \
 --model_name=fashionmnist \
---validation_ids=${data_root}/data_splits/FashionMNIST_val.csv \
+--validation_h5file=${data_root}/data_splits/FashionMNIST_val.csv \
 --in_ids=${data_root}/data_splits/FashionMNIST_test.csv \
 --out_ids=${data_root}/data_splits/MNIST_test.csv,${data_root}/data_splits/FashionMNIST_vflip_test.csv,${data_root}/data_splits/FashionMNIST_hflip_test.csv \
 --is_grayscale=1 \
@@ -158,8 +158,8 @@ and the other 9 datasets as out-of-distribution datasets.
 python train_vqvae.py  \
 --output_dir=${output_root} \
 --model_name=vqvae_decathlon \
---training_ids=${data_root}/data_splits/Task01_BrainTumour_train.csv \
---validation_ids=${data_root}/data_splits/Task01_BrainTumour_val.csv  \
+--training_h5file=${data_root}/data_splits/Task01_BrainTumour_train.csv \
+--validation_h5file=${data_root}/data_splits/Task01_BrainTumour_val.csv  \
 --is_grayscale=1 \
 --n_epochs=300 \
 --batch_size=8  \
@@ -188,8 +188,8 @@ python train_ddpm.py \
   --output_dir=${output_root} \
   --model_name=ddpm_decathlon \
   --vqvae_checkpoint=${output_root}/vqvae_decathlon/checkpoint.pth \
-  --training_ids=${data_root}/data_splits/Task01_BrainTumour_train.csv \
-  --validation_ids=${data_root}/data_splits/Task01_BrainTumour_val.csv  \
+  --training_h5file=${data_root}/data_splits/Task01_BrainTumour_train.csv \
+  --validation_h5file=${data_root}/data_splits/Task01_BrainTumour_val.csv  \
   --is_grayscale=1 \
   --n_epochs=12000 \
   --batch_size=6 \
@@ -214,7 +214,7 @@ python reconstruct.py \
   --output_dir=${output_root} \
   --model_name=ddpm_decathlon \
   --vqvae_checkpoint=${output_root}/decathlon-vqvae-4layer/checkpoint.pth \
-  --validation_ids=${data_root}/data_splits/Task01_BrainTumour_val.csv  \
+  --validation_h5file=${data_root}/data_splits/Task01_BrainTumour_val.csv  \
   --in_ids=${data_root}/data_splits/Task01_BrainTumour_test.csv \
   --out_ids=${data_root}/data_splits/Task02_Heart_test.csv,${data_root}/data_splits/Task03_Liver_test.csv,${data_root}/data_splits/Task04_Hippocampus_test.csv,${data_root}/data_splits/Task05_Prostate_test.csv,${data_root}/data_splits/Task06_Lung_test.csv,${data_root}/data_splits/Task07_Pancreas_test.csv,${data_root}/data_splits/Task08_HepaticVessel_test.csv,${data_root}/data_splits/Task09_Spleen_test.csv\
   --is_grayscale=1 \

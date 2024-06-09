@@ -148,8 +148,8 @@ class VQVAETrainer:
         self.num_epochs = args.n_epochs
         self.train_loader, self.val_loader = get_training_data_loader(
             batch_size=args.batch_size,
-            training_ids=args.training_ids,
-            validation_ids=args.validation_ids,
+            training_ids=args.training_h5file,
+            validation_ids=args.validation_h5file,
             num_workers=args.num_workers,
             cache_data=bool(args.cache_data),
             is_grayscale=bool(args.is_grayscale),
