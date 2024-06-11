@@ -11,7 +11,8 @@ from generative.networks.schedulers import DDPMScheduler
 from torch.cuda.amp import GradScaler
 from torch.nn.parallel import DistributedDataParallel
 
-from src.networks import PassthroughVQVAE, DiffusionModelUNet
+from src.networks import PassthroughVQVAE, DiffusionModelUNet, Wave
+from src.networks.config_torchwavenet import ModelConfig as WaveConfig
 from src.utils.simplex_noise import Simplex_CLASS
 
 
@@ -84,6 +85,18 @@ class BaseTrainer:
                 num_res_blocks=2,
                 num_head_channels=256,
                 with_conditioning=False,
+            ).to(self.device)
+        elif args.model_type == "wavenet":
+
+            cfg = WaveConfig(
+                input_channels=ddpm_channels,
+                residual_channels=256,
+                dilation_cycle_length=3,
+                residual_layers=8,
+            )
+
+            self.model = Wave(
+                cfg
             ).to(self.device)
         else:
             raise ValueError(f"Do not recognise model type {args.model_type}")

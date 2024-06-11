@@ -131,6 +131,9 @@ def main(args):
             "Task10",
         )
 
+    elif "testwave1" in model:
+        out_data = ("CommSignal3",)
+
     else:
         raise ValueError(f"Unknown dataset to select for run_dir {model}")
 
@@ -147,7 +150,8 @@ def main(args):
         results_df_out = results_df_out[results_df_out["t"].isin(t_values)]
         results_df = pd.concat((results_df_in, results_df_out))
         # get z-scores for each plot_target using the val-set
-        for target in ["perceptual_difference", "mse"]:
+        # for target in ["perceptual_difference", "mse"]:
+        for target in ["mse"]:
             # compute mean and std for each t value on the va
             results_df_val_agg = (
                 results_df_val.groupby(["t"])

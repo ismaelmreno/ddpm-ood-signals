@@ -69,8 +69,8 @@ in [README_additional.md](README_additional.md).
 ```bash
 python train_ddpm.py \
 --output_dir=${output_root} \
---model_name=test3 \
---model_type=small \
+--model_name=testwave1 \
+--model_type=wavenet \
 --training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_train.h5 \
 --validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
 --n_epochs=500 \
@@ -109,7 +109,8 @@ train_ddpm.py \
 ```bash
 python reconstruct.py \
 --output_dir=${output_root} \
---model_name=test3 \
+--model_name=testwave1 \
+--model_type=wavenet \
 --validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
 --in_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
 --out_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
@@ -117,9 +118,11 @@ python reconstruct.py \
 --beta_end=0.0195 \
 --num_inference_steps=100 \
 --inference_skip_factor=4 \
---run_val=1 \
---run_in=1 \
---run_out=1
+--run_val=0 \
+--run_in=0 \
+--batch_size=50 \
+--run_out=1 \
+--first_n=150
 ```
 
 The arg `inference_skip_factor` controls the amount of t starting points that are skipped during reconstruction.
@@ -138,7 +141,7 @@ or a subset of the in/out datasets with `--first_n=1000`
 ```bash
 python ood_detection.py \
 --output_dir=${output_root} \
---model_name=fashionmnist
+--model_name=testwave1
 ```
 
 ## Run with LDM
@@ -235,7 +238,7 @@ python reconstruct.py \
   --inference_skip_factor=2 \
   --run_val=1 \
   --run_in=1 \
-  --run_out=1
+  --run_out=1 
 ````
 
 ### Classify samples as OOD

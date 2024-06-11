@@ -147,7 +147,7 @@ class Reconstruct(BaseTrainer):
                         )
                     reconstructions = self.vqvae_model.decode_stage_2_outputs(reconstructions)
                     reconstructions = reconstructions / self.b_scale
-                    reconstructions.clamp_(0, 1)
+                    # reconstructions.clamp_(0, 1) # FFUUUUKKKKK
 
                     non_batch_dims = tuple(range(signals_original.dim()))[1:]
                     mse_metric = torch.square(signals_original - reconstructions).mean(
@@ -211,16 +211,17 @@ class Reconstruct(BaseTrainer):
                 print(out)
 
                 out_loader = get_training_data_loader(
+                    dataset_name=args.dataset_name,
                     batch_size=args.batch_size,
-                    training_ids=out,
-                    validation_ids=out,
+                    training_h5file=out,
+                    validation_h5file=out,
                     only_val=True,
                     num_workers=args.num_workers,
                     num_val_workers=args.num_workers,
                     cache_data=bool(args.cache_data),
                     drop_last=bool(args.drop_last),
                     first_n=int(args.first_n) if args.first_n else args.first_n,
-                    #spatial_dimension=args.spatial_dimension,
+                    # spatial_dimension=args.spatial_dimension,
                 )
                 dataset_name = Path(out).stem.split("_")[0]
                 results_list = self.get_scores(out_loader, "out", args.inference_skip_factor)

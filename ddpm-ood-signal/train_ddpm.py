@@ -95,7 +95,7 @@ def parse_args():
     parser.add_argument(
         "--checkpoint_every",
         type=int,
-        default=100,
+        default=50,
         help="Save a checkpoint every checkpoint_every epochs.",
     )
     parser.add_argument(
