@@ -2,6 +2,7 @@
  # MIT License                                                                       #
  #                                                                                   #
  # Copyright (C) 2019 Charly Lamothe                                                 #
+ # Copyright (C) 2018 Zalando Research                                               #
  #                                                                                   #
  # This file is part of VQ-VAE-Speech.                                               #
  #                                                                                   #
@@ -24,58 +25,22 @@
  #   SOFTWARE.                                                                       #
  #####################################################################################
 
-from error_handling.color_print import ColorPrint
+from .residual import Residual
 
-import sys
-import traceback
-import os
+import torch.nn as nn
+import torch.nn.functional as F
 
 
-class ConsoleLogger(object):
+class ResidualStack(nn.Module):
 
-    @staticmethod
-    def status(message):
-        if os.name == 'nt':
-            print('[~] {message}'.format(message=message))
-        else:
-            ColorPrint.print_info('[~] {message}'.format(message=message))
-
-    @staticmethod
-    def success(message):
-        if os.name == 'nt':
-            print('[+] {message}'.format(message=message))
-        else:
-            ColorPrint.print_pass('[+] {message}'.format(message=message))
-
-    @staticmethod
-    def error(message):
-        if sys.exc_info()[2]:
-            line = traceback.extract_tb(sys.exc_info()[2])[-1].lineno
-            error_message = '[-] {message} with cause: {cause} (line {line})'.format( \
-                message=message, cause=str(sys.exc_info()[1]), line=line)
-        else:
-            error_message = '[-] {message}'.format(message=message)
-        if os.name == 'nt':
-            print(error_message)
-        else:
-            ColorPrint.print_fail(error_message)
-
-    @staticmethod
-    def warn(message):
-        if os.name == 'nt':
-            print('[-] {message}'.format(message=message))
-        else:
-            ColorPrint.print_warn('[-] {message}'.format(message=message))
-
-    @staticmethod
-    def critical(message):
-        if sys.exc_info()[2]:
-            line = traceback.extract_tb(sys.exc_info()[2])[-1].lineno
-            error_message = '[!] {message} with cause: {cause} (line {line})'.format( \
-                message=message, cause=str(sys.exc_info()[1]), line=line)
-        else:
-            error_message = '[!] {message}'.format(message=message)
-        if os.name == 'nt':
-            print(error_message)
-        else:
-            ColorPrint.print_major_fail(error_message)
+    def __init__(self, in_channels, num_hiddens, num_residual_layers, num_residual_hiddens, use_kaiming_normal):
+        super(ResidualStack, self).__init__()
+        
+        self._num_residual_layers = num_residual_layers
+        self._layers = nn.ModuleList(
+            [Residual(in_channels, num_hiddens, num_residual_hiddens, use_kaiming_normal)] * self._num_residual_layers)
+        
+    def forward(self, x):
+        for i in range(self._num_residual_layers):
+            x = self._layers[i](x)
+        return F.relu(x)

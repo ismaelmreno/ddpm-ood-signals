@@ -104,6 +104,20 @@ train_ddpm.py \
 --quick_test=0
 ```
 
+#### Train a base model - Autoencoder
+
+```bash
+python train_autoencoder.py \
+--output_dir=${output_root} \
+--model_name=autoencoder \
+--model_type=autoencoder \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
+--n_epochs=500 \
+--batch_size=40 \
+--quick_test=0
+```
+
 ### Reconstruct data
 
 ```bash
@@ -146,42 +160,20 @@ python ood_detection.py \
 
 ## Run with LDM
 
-We'll use the 3D Medical Decathlon Dataset here. In this example we'll use the BraTS dataset as the in-distribution
-dataset,
-and the other 9 datasets as out-of-distribution datasets.
-
-### Download and process datasets
-
-[//]: # (```bash)
-
-[//]: # (python src/data/get_decathlon_datasets.py --data_root=${data_root}/Decathlon)
-
-[//]: # (```)
 
 ### Train VQVAE
 
 ```bash
 python train_vqvae.py  \
 --output_dir=${output_root} \
---model_name=vqvae_decathlon \
---training_h5file=${data_root}/data_splits/Task01_BrainTumour_train.csv \
---validation_h5file=${data_root}/data_splits/Task01_BrainTumour_val.csv  \
---is_grayscale=1 \
+--model_name=vqvae_Commsignal2 \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
 --n_epochs=300 \
 --batch_size=8  \
 --eval_freq=10 \
 --cache_data=0  \
---vqvae_downsample_parameters=[[2,4,1,1],[2,4,1,1],[2,4,1,1],[2,4,1,1]] \
---vqvae_upsample_parameters=[[2,4,1,1,0],[2,4,1,1,0],[2,4,1,1,0],[2,4,1,1,0]] \
---vqvae_num_channels=[256,256,256,256] \
---vqvae_num_res_channels=[256,256,256,256] \
---vqvae_embedding_dim=128 \
---vqvae_num_embeddings=2048 \
---vqvae_decay=0.9  \
---vqvae_learning_rate=3e-5 \
---spatial_dimension=3 \
---image_roi=[160,160,128] \
---image_size=128
+--spatial_dimension=1
 ```
 
 The code is DistributedDataParallel (DDP) compatible. To train on e.g. 2 GPUs run with

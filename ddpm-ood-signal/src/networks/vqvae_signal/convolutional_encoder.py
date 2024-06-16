@@ -24,9 +24,9 @@
  #   SOFTWARE.                                                                       #
  #####################################################################################
 
-from modules.residual_stack import ResidualStack
-from modules.conv1d_builder import Conv1DBuilder
-from error_handling.console_logger import ConsoleLogger
+from .residual_stack import ResidualStack
+from .conv1d_builder import Conv1DBuilder
+from .console_logger import ConsoleLogger
 
 import torch
 import torch.nn as nn
@@ -36,7 +36,7 @@ import torch.nn.functional as F
 class ConvolutionalEncoder(nn.Module):
     
     def __init__(self, in_channels, num_hiddens, num_residual_layers, num_residual_hiddens,
-        use_kaiming_normal, input_features_type, features_filters, sampling_rate,
+        use_kaiming_normal, input_features_type, features_filters,
         device, verbose=False):
 
         super(ConvolutionalEncoder, self).__init__()
@@ -111,7 +111,6 @@ class ConvolutionalEncoder(nn.Module):
         
         self._input_features_type = input_features_type
         self._features_filters = features_filters
-        self._sampling_rate = sampling_rate
         self._device = device
         self._verbose = verbose
 

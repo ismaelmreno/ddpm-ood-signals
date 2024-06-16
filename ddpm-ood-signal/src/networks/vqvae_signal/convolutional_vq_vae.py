@@ -24,11 +24,11 @@
  #   SOFTWARE.                                                                       #
  #####################################################################################
 
-from models.convolutional_encoder import ConvolutionalEncoder
-from models.deconvolutional_decoder import DeconvolutionalDecoder
-from models.vector_quantizer import VectorQuantizer
-from models.vector_quantizer_ema import VectorQuantizerEMA
-from error_handling.console_logger import ConsoleLogger
+from .convolutional_encoder import ConvolutionalEncoder
+from .deconvolutional_decoder import DeconvolutionalDecoder
+from .vector_quantizer import VectorQuantizer
+from .vector_quantizer_ema import VectorQuantizerEMA
+from .console_logger import ConsoleLogger
 
 import torch.nn as nn
 import torch
@@ -51,9 +51,8 @@ class ConvolutionalVQVAE(nn.Module):
             num_residual_layers=configuration['num_residual_layers'],
             num_residual_hiddens=configuration['num_hiddens'],
             use_kaiming_normal=configuration['use_kaiming_normal'],
-            input_features_type=configuration['input_features_type'],
+            input_features_type=None,
             features_filters=configuration['input_features_filters'] * 3 if configuration['augment_input_features'] else configuration['input_features_filters'],
-            sampling_rate=configuration['sampling_rate'],
             device=device,
             verbose=self._verbose
         )
@@ -90,7 +89,6 @@ class ConvolutionalVQVAE(nn.Module):
             use_kaiming_normal=configuration['use_kaiming_normal'],
             use_jitter=configuration['use_jitter'],
             jitter_probability=configuration['jitter_probability'],
-            use_speaker_conditioning=configuration['use_speaker_conditioning'],
             device=device,
             verbose=self._verbose
         )
@@ -114,8 +112,8 @@ class ConvolutionalVQVAE(nn.Module):
     def decoder(self):
         return self._decoder
 
-    def forward(self, x, speaker_dic, speaker_id):
-        x = x.permute(0, 2, 1).contiguous().float()
+    def forward(self, x):
+        x = x.contiguous().float()
 
         z = self._encoder(x)
         if self._verbose:
@@ -128,7 +126,7 @@ class ConvolutionalVQVAE(nn.Module):
         vq_loss, quantized, perplexity, _, _, encoding_indices, \
             losses, _, _, _, concatenated_quantized = self._vq(z, record_codebook_stats=self._record_codebook_stats)
 
-        reconstructed_x = self._decoder(quantized, speaker_dic, speaker_id)
+        reconstructed_x = self._decoder(quantized)
 
         input_features_size = x.size(2)
         output_features_size = reconstructed_x.size(2)

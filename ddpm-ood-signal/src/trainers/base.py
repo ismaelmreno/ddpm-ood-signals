@@ -10,6 +10,7 @@ from generative.networks.nets import VQVAE
 from generative.networks.schedulers import DDPMScheduler
 from torch.cuda.amp import GradScaler
 from torch.nn.parallel import DistributedDataParallel
+from monai.networks.nets.autoencoder import AutoEncoder
 
 from src.networks import PassthroughVQVAE, DiffusionModelUNet, Wave
 from src.networks.config_torchwavenet import ModelConfig as WaveConfig
@@ -95,9 +96,18 @@ class BaseTrainer:
                 residual_layers=8,
             )
 
-            self.model = Wave(
-                cfg
+            self.model = Wave(cfg).to(self.device)
+
+        elif args.model_type == "autoencoder":
+
+            self.model = AutoEncoder(
+                spatial_dims=args.spatial_dimension,
+                in_channels=ddpm_channels,
+                out_channels=ddpm_channels,
+                channels=(16, 32, 64),
+                strides=(2, 2, 2),
             ).to(self.device)
+
         else:
             raise ValueError(f"Do not recognise model type {args.model_type}")
         print(f"{sum(p.numel() for p in self.model.parameters()):,} model parameters")
