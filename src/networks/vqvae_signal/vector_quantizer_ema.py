@@ -1,29 +1,29 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- # Copyright (C) 2018 Zalando Research                                               #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+# Copyright (C) 2018 Zalando Research                                               #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 import torch
 import torch.nn as nn
@@ -61,7 +61,7 @@ class VectorQuantizerEMA(nn.Module):
         decay: float, decay for the moving averages.
         epsilon: small float constant to avoid numerical instability.
     """
-    
+
     def __init__(self, num_embeddings, embedding_dim, commitment_cost, decay, device, epsilon=1e-5):
         super(VectorQuantizerEMA, self).__init__()
 
@@ -75,7 +75,7 @@ class VectorQuantizerEMA(nn.Module):
         self.register_buffer('_ema_cluster_size', torch.zeros(num_embeddings))
         self._ema_w = nn.Parameter(torch.Tensor(num_embeddings, self._embedding_dim))
         self._ema_w.data.normal_()
-        
+
         self._decay = decay
         self._device = device
         self._epsilon = epsilon
@@ -101,14 +101,14 @@ class VectorQuantizerEMA(nn.Module):
         inputs = inputs.permute(1, 2, 0).contiguous()
         input_shape = inputs.shape
         _, time, batch_size = input_shape
-        
+
         # Flatten input
         flat_input = inputs.view(-1, self._embedding_dim)
-        
+
         # Compute distances between encoded audio frames and embedding vectors
-        distances = (torch.sum(flat_input**2, dim=1, keepdim=True) 
-                    + torch.sum(self._embedding.weight**2, dim=1)
-                    - 2 * torch.matmul(flat_input, self._embedding.weight.t()))
+        distances = (torch.sum(flat_input ** 2, dim=1, keepdim=True)
+                     + torch.sum(self._embedding.weight ** 2, dim=1)
+                     - 2 * torch.matmul(flat_input, self._embedding.weight.t()))
 
         """
         encoding_indices: Tensor containing the discrete encoding indices, ie
@@ -138,16 +138,16 @@ class VectorQuantizerEMA(nn.Module):
             frames_vs_embedding_distances = torch.tensor(_frames_vs_embedding_distances).to(self._device).view(batch_size, time, -1)
         else:
             frames_vs_embedding_distances = None
-        
+
         # Use EMA to update the embedding vectors
         if self.training:
             self._ema_cluster_size = self._ema_cluster_size * self._decay + \
-                (1 - self._decay) * torch.sum(encodings, 0)
+                                     (1 - self._decay) * torch.sum(encodings, 0)
 
             n = torch.sum(self._ema_cluster_size.data)
             self._ema_cluster_size = (
-                (self._ema_cluster_size + self._epsilon)
-                / (n + self._num_embeddings * self._epsilon) * n
+                    (self._ema_cluster_size + self._epsilon)
+                    / (n + self._num_embeddings * self._epsilon) * n
             )
 
             dw = torch.matmul(encodings.t(), flat_input)
@@ -162,7 +162,7 @@ class VectorQuantizerEMA(nn.Module):
         concatenated_quantized = self._embedding.weight[torch.argmin(distances, dim=1).detach().cpu()] if not self.training or record_codebook_stats else None
 
         # Loss
-        e_latent_loss = torch.mean((quantized.detach() - inputs)**2)
+        e_latent_loss = torch.mean((quantized.detach() - inputs) ** 2)
         commitment_loss = self._commitment_cost * e_latent_loss
         vq_loss = commitment_loss
 

@@ -1,26 +1,26 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2018 Sungwon Kim                                                    #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2018 Sungwon Kim                                                    #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from clarinet.modules import Conv, ResBlock
 
@@ -76,7 +76,7 @@ class Wavenet_Flow(nn.Module):
     def __init__(self, out_channels=1, num_blocks=4, num_layers=6,
                  front_channels=32, residual_channels=64, gate_channels=32, skip_channels=None,
                  kernel_size=3, cin_channels=80, causal=True):
-        super(Wavenet_Flow, self). __init__()
+        super(Wavenet_Flow, self).__init__()
 
         self.causal = causal
         self.num_blocks = num_blocks
@@ -98,7 +98,7 @@ class Wavenet_Flow(nn.Module):
         for b in range(self.num_blocks):
             for n in range(self.num_layers):
                 self.res_blocks.append(ResBlock(self.residual_channels, self.gate_channels, self.skip_channels,
-                                                self.kernel_size, dilation=self.kernel_size**n,
+                                                self.kernel_size, dilation=self.kernel_size ** n,
                                                 cin_channels=self.cin_channels, local_conditioning=True,
                                                 causal=self.causal, mode='SAME'))
         self.final_conv = nn.Sequential(

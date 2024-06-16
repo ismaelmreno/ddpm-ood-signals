@@ -1,26 +1,26 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2018 Sungwon Kim                                                    #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2018 Sungwon Kim                                                    #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 import torch
 from torch.utils.data import DataLoader
@@ -32,6 +32,7 @@ import librosa
 import os
 import argparse
 import time
+
 
 def build_model():
     model = Flowavenet(in_channel=1,
@@ -86,11 +87,12 @@ def load_checkpoint(step, model):
         model.load_state_dict(new_state_dict)
     return model
 
+
 if __name__ == "__main__":
     torch.backends.cudnn.benchmark = False
     np.set_printoptions(precision=4)
     parser = argparse.ArgumentParser(description='Train FloWaveNet of LJSpeech',
-                                    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--data_path', type=str, default='../DATASETS/ljspeech/', help='Dataset Path')
     parser.add_argument('--sample_path', type=str, default='../samples', help='Sample Path')
     parser.add_argument('--model_name', type=str, default='flowavenet', help='Model Name')
@@ -118,7 +120,7 @@ if __name__ == "__main__":
     # LOAD DATASETS
     test_dataset = LJspeechDataset(args.data_path, False, 0.1)
     synth_loader = DataLoader(test_dataset, batch_size=1, collate_fn=collate_fn_synthesize,
-                            num_workers=args.num_workers, pin_memory=True)
+                              num_workers=args.num_workers, pin_memory=True)
 
     step = args.load_step
     global_step = step

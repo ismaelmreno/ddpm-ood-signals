@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from error_handling.console_logger import ConsoleLogger
 
@@ -48,7 +48,7 @@ class GradientStats(object):
         return {
             'ave_grads': ave_grads,
             'max_grads': max_grads,
-            'layers': layers
+            'layers':    layers
         }
 
     @staticmethod
@@ -73,7 +73,7 @@ class GradientStats(object):
             ax.set_xticklabels(layers, rotation='vertical', fontsize=7)
             ax.set_xlabel('Layers')
         ax.set_xlim(left=0, right=len(ave_grads))
-        ax.set_ylim(bottom=-0.001, top=0.02) # Zoom in on the lower gradient regions
+        ax.set_ylim(bottom=-0.001, top=0.02)  # Zoom in on the lower gradient regions
         if set_ylabels:
             ax.set_ylabel('Average gradient')
         ax.grid(True)
@@ -91,7 +91,7 @@ class GradientStats(object):
         fig, axs = plt.subplots(
             epoch_number,
             iteration_number,
-            figsize=(epoch_number*8, iteration_number*8),
+            figsize=(epoch_number * 8, iteration_number * 8),
             sharey=True,
             sharex=True
         )
@@ -114,8 +114,8 @@ class GradientStats(object):
             Line2D([0], [0], color='b', lw=4),
             Line2D([0], [0], color='k', lw=4)],
             ['max-gradient', 'mean-gradient', 'zero-gradient'],
-            loc="center right", # Position of legend
-            borderaxespad=0.1 # Small spacing around legend box
+            loc="center right",  # Position of legend
+            borderaxespad=0.1  # Small spacing around legend box
         )
         fig.savefig(output_file_name, bbox_inches='tight', pad_inches=0, dpi=200)
         plt.close(fig)

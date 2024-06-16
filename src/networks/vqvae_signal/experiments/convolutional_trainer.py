@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from experiments.base_trainer import BaseTrainer
 
@@ -30,6 +30,7 @@ import torch
 from torch import nn
 import torch.optim as optim
 import os
+
 
 class ConvolutionalTrainer(BaseTrainer):
 
@@ -39,7 +40,7 @@ class ConvolutionalTrainer(BaseTrainer):
         self._model = kwargs.get('model', None)
         self._criterion = kwargs.get('criterion', nn.MSELoss())
         self._optimizer = kwargs.get('optimizer',
-            optim.Adam(self._model.parameters(), lr=configuration['learning_rate'], amsgrad=True))
+                                     optim.Adam(self._model.parameters(), lr=configuration['learning_rate'], amsgrad=True))
 
     def iterate(self, data, epoch, iteration, iterations, train_bar):
         source = data['input_features'].to(self._device)
@@ -58,12 +59,12 @@ class ConvolutionalTrainer(BaseTrainer):
         losses['loss'] = loss.item()
 
         self._record_codebook_stats(iteration, iterations, self._model.vq,
-            concatenated_quantized, encoding_indices, data['speaker_id'], epoch)
+                                    concatenated_quantized, encoding_indices, data['speaker_id'], epoch)
 
         loss.backward()
 
         self._record_gradient_stats({'model': self._model, 'encoder': self._model.encoder,
-            'vq': self._model.vq, 'decoder': self._model.decoder}, iteration, iterations, epoch)
+                                     'vq':    self._model.vq, 'decoder': self._model.decoder}, iteration, iterations, epoch)
 
         self._optimizer.step()
 
@@ -75,13 +76,12 @@ class ConvolutionalTrainer(BaseTrainer):
 
     def save(self, epoch, **kwargs):
         torch.save({
-            'experiment_name': self._experiment_name,
-            'epoch': epoch + 1,
-            'model': self._model.state_dict(),
-            'optimizer': self._optimizer.state_dict(),
+            'experiment_name':       self._experiment_name,
+            'epoch':                 epoch + 1,
+            'model':                 self._model.state_dict(),
+            'optimizer':             self._optimizer.state_dict(),
             'train_res_recon_error': kwargs.get('train_res_recon_error', -1),
-            'train_res_perplexity': kwargs.get('train_res_perplexity', -1)},
+            'train_res_perplexity':  kwargs.get('train_res_perplexity', -1)},
             os.path.join(self._experiments_path, '{}_{}_checkpoint.pth'.format(
                 self._experiment_name, epoch + 1))
         )
-

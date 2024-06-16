@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib import colors, colorbar
@@ -48,7 +48,7 @@ class Utils(object):
         """
 
         if type not in ('bright', 'soft'):
-            print ('Please choose "bright" or "soft" for type')
+            print('Please choose "bright" or "soft" for type')
             return
 
         if verbose:
@@ -57,8 +57,8 @@ class Utils(object):
         # Generate color map for bright colors, based on hsv
         if type == 'bright':
             randHSVcolors = [(np.random.uniform(low=0.0, high=1),
-                            np.random.uniform(low=0.2, high=1),
-                            np.random.uniform(low=0.9, high=1)) for i in range(nlabels)]
+                              np.random.uniform(low=0.2, high=1),
+                              np.random.uniform(low=0.9, high=1)) for i in range(nlabels)]
 
             # Convert HSV list to RGB
             randRGBcolors = []
@@ -78,8 +78,8 @@ class Utils(object):
             low = 0.6
             high = 0.95
             randRGBcolors = [(np.random.uniform(low=low, high=high),
-                            np.random.uniform(low=low, high=high),
-                            np.random.uniform(low=low, high=high)) for i in range(nlabels)]
+                              np.random.uniform(low=low, high=high),
+                              np.random.uniform(low=low, high=high)) for i in range(nlabels)]
 
             if first_color_black:
                 randRGBcolors[0] = [0, 0, 0]
@@ -96,14 +96,14 @@ class Utils(object):
             norm = colors.BoundaryNorm(bounds, nlabels)
 
             cb = colorbar.ColorbarBase(ax, cmap=random_colormap, norm=norm, spacing='proportional', ticks=None,
-                                    boundaries=bounds, format='%1i', orientation=u'horizontal')
+                                       boundaries=bounds, format='%1i', orientation=u'horizontal')
 
         return random_colormap
 
     @staticmethod
     def build_gif(images, interval=0.1, dpi=72,
-        save_gif=True, saveto='animation.gif',
-        show_gif=False, cmap=None):
+                  save_gif=True, saveto='animation.gif',
+                  show_gif=False, cmap=None):
         """
         Take an array or list of images and create a GIF.
         Parameters

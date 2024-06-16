@@ -25,6 +25,7 @@ packages:
 [//]: # (You can also build the docker image)
 
 [//]: # ()
+
 [//]: # (```bash)
 
 [//]: # (cd docker/)
@@ -159,7 +160,6 @@ python ood_detection.py \
 ```
 
 ## Run with LDM
-
 
 ### Train VQVAE
 

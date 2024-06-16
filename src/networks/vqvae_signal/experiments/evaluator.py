@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from dataset.spectrogram_parser import SpectrogramParser
 from dataset.vctk import VCTK
@@ -56,8 +56,8 @@ class Evaluator(object):
         self._model.eval()
 
         if evaluation_options['plot_comparaison_plot'] or \
-            evaluation_options['plot_quantized_embedding_spaces'] or \
-            evaluation_options['plot_distances_histogram']:
+                evaluation_options['plot_quantized_embedding_spaces'] or \
+                evaluation_options['plot_distances_histogram']:
             evaluation_entry = self._evaluate_once()
 
         if evaluation_options['plot_comparaison_plot']:
@@ -72,14 +72,14 @@ class Evaluator(object):
         if evaluation_options['plot_distances_histogram']:
             self._plot_distances_histogram(evaluation_entry)
 
-        #self._test_denormalization(evaluation_entry)
+        # self._test_denormalization(evaluation_entry)
 
         if evaluation_options['compute_many_to_one_mapping']:
             self._many_to_one_mapping()
 
         if evaluation_options['compute_alignments'] or \
-            evaluation_options['compute_clustering_metrics'] or \
-            evaluation_options['compute_groundtruth_average_phonemes_number']:
+                evaluation_options['compute_clustering_metrics'] or \
+                evaluation_options['compute_groundtruth_average_phonemes_number']:
             alignment_stats = AlignmentStats(
                 self._data_stream,
                 self._vctk,
@@ -92,7 +92,7 @@ class Evaluator(object):
             )
         if evaluation_options['compute_alignments']:
             groundtruth_alignments_path = self._results_path + os.sep + \
-                'vctk_{}_groundtruth_alignments.pickle'.format(evaluation_options['alignment_subset'])
+                                          'vctk_{}_groundtruth_alignments.pickle'.format(evaluation_options['alignment_subset'])
             if not os.path.isfile(groundtruth_alignments_path):
                 alignment_stats.compute_groundtruth_alignments()
                 alignment_stats.compute_groundtruth_bigrams_matrix(wo_diag=True)
@@ -102,7 +102,7 @@ class Evaluator(object):
                 ConsoleLogger.status('Groundtruth alignments already exist')
 
             empirical_alignments_path = self._results_path + os.sep + self._experiment_name + \
-                '_vctk_{}_empirical_alignments.pickle'.format(evaluation_options['alignment_subset'])
+                                        '_vctk_{}_empirical_alignments.pickle'.format(evaluation_options['alignment_subset'])
             if not os.path.isfile(empirical_alignments_path):
                 alignment_stats.compute_empirical_alignments()
                 alignment_stats.compute_empirical_bigrams_matrix(wo_diag=True)
@@ -143,35 +143,35 @@ class Evaluator(object):
         valid_reconstructions = self._model.decoder(quantized, self._data_stream.speaker_dic, speaker_ids)[0]
 
         return {
-            'preprocessed_audio': preprocessed_audio,
-            'valid_originals': valid_originals,
-            'speaker_ids': speaker_ids,
-            'target': target,
-            'wav_filename': wav_filename,
-            'shifting_time': shifting_time,
-            'preprocessed_length': preprocessed_length,
-            'batch_size': batch_size,
-            'quantized': quantized,
-            'encodings': encodings,
-            'distances': distances,
-            'encoding_indices': encoding_indices,
-            'encoding_distances': encoding_distances,
-            'embedding_distances': embedding_distances,
+            'preprocessed_audio':            preprocessed_audio,
+            'valid_originals':               valid_originals,
+            'speaker_ids':                   speaker_ids,
+            'target':                        target,
+            'wav_filename':                  wav_filename,
+            'shifting_time':                 shifting_time,
+            'preprocessed_length':           preprocessed_length,
+            'batch_size':                    batch_size,
+            'quantized':                     quantized,
+            'encodings':                     encodings,
+            'distances':                     distances,
+            'encoding_indices':              encoding_indices,
+            'encoding_distances':            encoding_distances,
+            'embedding_distances':           embedding_distances,
             'frames_vs_embedding_distances': frames_vs_embedding_distances,
-            'concatenated_quantized': concatenated_quantized,
-            'valid_reconstructions': valid_reconstructions
+            'concatenated_quantized':        concatenated_quantized,
+            'valid_reconstructions':         valid_reconstructions
         }
 
     def _compute_comparaison_plot(self, evaluation_entry):
         utterence_key = evaluation_entry['wav_filename'].split('/')[-1].replace('.wav', '')
         utterence = self._vctk.utterences[utterence_key].replace('\n', '')
         phonemes_alignment_path = os.sep.join(evaluation_entry['wav_filename'].split('/')[:-3]) \
-            + os.sep + 'phonemes' + os.sep + utterence_key.split('_')[0] + os.sep \
-            + utterence_key + '.TextGrid'
-        #tg = textgrid.TextGrid()
-        #tg.read(phonemes_alignment_path)
-        #for interval in tg.tiers[0]:
-    
+                                  + os.sep + 'phonemes' + os.sep + utterence_key.split('_')[0] + os.sep \
+                                  + utterence_key + '.TextGrid'
+        # tg = textgrid.TextGrid()
+        # tg.read(phonemes_alignment_path)
+        # for interval in tg.tiers[0]:
+
         ConsoleLogger.status('Original utterence: {}'.format(utterence))
 
         if self._configuration['verbose']:
@@ -187,7 +187,7 @@ class Evaluator(object):
 
         probs = F.softmax(-evaluation_entry['distances'][0], dim=1).detach().cpu().transpose(0, 1).contiguous()
 
-        #target = self._target.detach().cpu()[0].numpy()
+        # target = self._target.detach().cpu()[0].numpy()
 
         valid_reconstructions = evaluation_entry['valid_reconstructions'].detach().cpu().numpy()
 
@@ -220,7 +220,7 @@ class Evaluator(object):
         encodings = evaluation_entry['encodings'].detach().cpu().numpy()
         axs[4].set_title('Encodings')
         self._plot_pcolormesh(encodings[0].transpose(), fig, x=self._compute_unified_time_scale(encodings[0].transpose().shape[1],
-            downsampling_factor=2), axis=axs[4])
+                                                                                                downsampling_factor=2), axis=axs[4])
 
         # Actual reconstruction
         axs[5].set_title('Actual reconstruction')
@@ -231,9 +231,9 @@ class Evaluator(object):
         plt.close()
 
     def _plot_pcolormesh(self, data, fig, x=None, y=None, axis=None):
-        axis = plt.gca() if axis is None else axis # default axis if None
-        x = np.arange(data.shape[1]) if x is None else x # default x shape if None
-        y = np.arange(data.shape[0]) if y is None else y # default y shape if None
+        axis = plt.gca() if axis is None else axis  # default axis if None
+        x = np.arange(data.shape[1]) if x is None else x  # default x shape if None
+        y = np.arange(data.shape[0]) if y is None else y  # default y shape if None
         c = axis.pcolormesh(x, y, data)
         fig.colorbar(c, ax=axis)
 
@@ -253,11 +253,11 @@ class Evaluator(object):
         fig, axs = plt.subplots(3, 1, figsize=(30, 20), sharex=True)
 
         axs[0].set_title('\n'.join(wrap('Histogram of the distances between the'
-            ' encodings vectors', 60)))
+                                        ' encodings vectors', 60)))
         sns.distplot(encoding_distances, hist=True, kde=False, ax=axs[0], norm_hist=True)
 
         axs[1].set_title('\n'.join(wrap('Histogram of the distances between the'
-            ' embeddings vectors', 60)))
+                                        ' embeddings vectors', 60)))
         sns.distplot(embedding_distances, hist=True, kde=False, ax=axs[1], norm_hist=True)
 
         axs[2].set_title(
@@ -337,13 +337,13 @@ class Evaluator(object):
                     wav_filename = wav_filenames[0][i]
                     utterence_key = wav_filename.split('/')[-1].replace('.wav', '')
                     phonemes_alignment_path = os.sep.join(wav_filename.split('/')[:-3]) + os.sep + 'phonemes' + os.sep + utterence_key.split('_')[0] + os.sep \
-                        + utterence_key + '.TextGrid'
+                                              + utterence_key + '.TextGrid'
                     tg = textgrid.TextGrid()
                     tg.read(phonemes_alignment_path)
                     entry = {
                         'encoding_indices': encoding_indices[i].detach().cpu().numpy(),
-                        'groundtruth': tg.tiers[1],
-                        'shifting_time': shifting_times[i].detach().cpu().item()
+                        'groundtruth':      tg.tiers[1],
+                        'shifting_time':    shifting_times[i].detach().cpu().item()
                     }
                     tokens_selections.append(entry)
 
@@ -356,7 +356,7 @@ class Evaluator(object):
         for entry in tokens_selections:
             encoding_indices = entry['encoding_indices']
             unified_encoding_indices_time_scale = self._compute_unified_time_scale(
-                encoding_indices.shape[0], downsampling_factor=2) # Compute the time scale array for each token
+                encoding_indices.shape[0], downsampling_factor=2)  # Compute the time scale array for each token
             """
             Search the grountruth phoneme where the selected token index time scale
             is within the groundtruth interval.
@@ -373,15 +373,15 @@ class Evaluator(object):
                         break
                 if not corresponding_phoneme:
                     ConsoleLogger.warn("Corresponding phoneme not found. unified_encoding_indices_time_scale[{}]: {}"
-                        "entry['shifting_time']: {} index_time_scale: {}".format(i, unified_encoding_indices_time_scale[i],
-                        entry['shifting_time'], index_time_scale))
+                                       "entry['shifting_time']: {} index_time_scale: {}".format(i, unified_encoding_indices_time_scale[i],
+                                                                                                entry['shifting_time'], index_time_scale))
                 if corresponding_phoneme not in phonemes_mapping:
                     phonemes_mapping[corresponding_phoneme] = list()
                 phonemes_mapping[corresponding_phoneme].append(encoding_indices[i][0])
 
         ConsoleLogger.status('phonemes_mapping: {}'.format(phonemes_mapping))
 
-        tokens_mapping = dict() # dictionnary that will contain the distribution for each token to fits with a certain phoneme
+        tokens_mapping = dict()  # dictionnary that will contain the distribution for each token to fits with a certain phoneme
 
         """
         Fill the tokens_mapping such that for each token index (key)
@@ -396,7 +396,7 @@ class Evaluator(object):
 
         # Sort the probabilities for each token 
         for index, distribution in tokens_mapping.items():
-            tokens_mapping[index] = list(sorted(distribution, key = lambda x: x[1], reverse=True))
+            tokens_mapping[index] = list(sorted(distribution, key=lambda x: x[1], reverse=True))
 
         ConsoleLogger.status('tokens_mapping: {}'.format(tokens_mapping))
 
@@ -435,7 +435,7 @@ class Evaluator(object):
                 B = valid_reconstructions.size(0)
 
                 all_speaker_ids.append(speaker_ids.detach().cpu().numpy().tolist())
-                #torch.cat(all_embeddings, self._model.vq.embedding.weight.data) # FIXME
+                # torch.cat(all_embeddings, self._model.vq.embedding.weight.data) # FIXME
 
         # - Group the embeddings by speaker: create a tensor/numpy per speaker id from all_embeddings
         # - Compute the distribution of each embedding (seaborn histogram, softmax)
@@ -443,8 +443,8 @@ class Evaluator(object):
         #   a distribution distance (e.g. entropy) and plot them (seaborn histogram?)
 
         # Snippet
-        #_embedding_distances = [torch.dist(items[0], items[1], 2).to(self._device) for items in combinations(self._embedding.weight, r=2)]
-        #embedding_distances = torch.tensor(_embedding_distances).to(self._device)
+        # _embedding_distances = [torch.dist(items[0], items[1], 2).to(self._device) for items in combinations(self._embedding.weight, r=2)]
+        # embedding_distances = torch.tensor(_embedding_distances).to(self._device)
 
     def _compute_entropy_distributions(self):
         original_distribution = list()

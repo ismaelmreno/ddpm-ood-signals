@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from error_handling.console_logger import ConsoleLogger
 from evaluation.utils import Utils
@@ -73,20 +73,20 @@ class EmbeddingSpaceStats(object):
             )
 
     def plot_quantized_embedding_space(self, projection, n_neighbors, n_embedding,
-        time_speaker_ids, encoding_indices, batch_size, use_jittered_scatter=True,
-        xlabel_width=60):
+                                       time_speaker_ids, encoding_indices, batch_size, use_jittered_scatter=True,
+                                       xlabel_width=60):
 
         fig, axs = plt.subplots(1, 2, figsize=(16, 8), sharey=True)
 
         # Colored by speaker id
         if use_jittered_scatter:
-            axs[0] = self._jittered_scatter(axs[0], projection[:-n_embedding,0], projection[:-n_embedding, 1], s=10, c=time_speaker_ids, cmap=self._cmap)
+            axs[0] = self._jittered_scatter(axs[0], projection[:-n_embedding, 0], projection[:-n_embedding, 1], s=10, c=time_speaker_ids, cmap=self._cmap)
         else:
-            axs[0].scatter(projection[:-n_embedding,0], projection[:-n_embedding, 1], s=10, c=time_speaker_ids, cmap=self._cmap) # audio frame colored by speaker id
-        axs[0].scatter(projection[-n_embedding:,0], projection[-n_embedding:, 1], s=50, marker='x', c='k', alpha=0.8) # embedding
+            axs[0].scatter(projection[:-n_embedding, 0], projection[:-n_embedding, 1], s=10, c=time_speaker_ids, cmap=self._cmap)  # audio frame colored by speaker id
+        axs[0].scatter(projection[-n_embedding:, 0], projection[-n_embedding:, 1], s=50, marker='x', c='k', alpha=0.8)  # embedding
         xlabel = 'Embedding of ' + str(batch_size) + ' valuations' \
-            ' with ' + str(n_neighbors) + ' neighbors with the audio frame points colored' \
-            ' by speaker id and the embedding marks colored in black'
+                                                     ' with ' + str(n_neighbors) + ' neighbors with the audio frame points colored' \
+                                                                                   ' by speaker id and the embedding marks colored in black'
         axs[0] = self._configure_ax(
             axs[0],
             xlabel='\n'.join(wrap(xlabel, xlabel_width))
@@ -94,14 +94,14 @@ class EmbeddingSpaceStats(object):
 
         # Colored by encoding indices
         if use_jittered_scatter:
-            axs[1] = self._jittered_scatter(axs[1], projection[:-n_embedding,0], projection[:-n_embedding, 1], s=10, c=encoding_indices, cmap=self._cmap)
+            axs[1] = self._jittered_scatter(axs[1], projection[:-n_embedding, 0], projection[:-n_embedding, 1], s=10, c=encoding_indices, cmap=self._cmap)
         else:
-            axs[1].scatter(projection[:-n_embedding,0], projection[:-n_embedding, 1], s=10, c=encoding_indices, cmap=cmap) # audio frame colored by encoding indices
-        axs[1].scatter(projection[-n_embedding:, 0], projection[-n_embedding:, 1], s=50, marker='x', c=np.arange(n_embedding), cmap=self._cmap) # different color for each embedding
+            axs[1].scatter(projection[:-n_embedding, 0], projection[:-n_embedding, 1], s=10, c=encoding_indices, cmap=cmap)  # audio frame colored by encoding indices
+        axs[1].scatter(projection[-n_embedding:, 0], projection[-n_embedding:, 1], s=50, marker='x', c=np.arange(n_embedding), cmap=self._cmap)  # different color for each embedding
         xlabel = 'Embedding of ' + str(batch_size) + ' valuations' \
-            ' with ' + str(n_neighbors) + ' neighbors with the audio frame points colored' \
-            ' by encoding indices and the embedding marks colored by number of embedding' \
-            ' vectors (using the same color map)'
+                                                     ' with ' + str(n_neighbors) + ' neighbors with the audio frame points colored' \
+                                                                                   ' by encoding indices and the embedding marks colored by number of embedding' \
+                                                                                   ' vectors (using the same color map)'
         axs[1] = self._configure_ax(
             axs[1],
             xlabel='\n'.join(wrap(xlabel, width=xlabel_width))
@@ -133,17 +133,17 @@ class EmbeddingSpaceStats(object):
 
         quantized_embedding_space_state = {
             'quantized_embedding_space': quantized_embedding_space,
-            'n_embedding': n_embedding,
-            'encoding_indices': encoding_indices,
-            'time_speaker_ids': time_speaker_ids,
-            'batch_size': batch_size
+            'n_embedding':               n_embedding,
+            'encoding_indices':          encoding_indices,
+            'time_speaker_ids':          time_speaker_ids,
+            'batch_size':                batch_size
         }
 
         return quantized_embedding_space_state
 
     @staticmethod
     def compute_and_plot_quantized_embedding_space_projections(results_path, experiment_name,
-        evaluation_entry, embedding, batch_size):
+                                                               evaluation_entry, embedding, batch_size):
         embedding_space_stats = EmbeddingSpaceStats(results_path, experiment_name)
         quantized_embedding_space_state = EmbeddingSpaceStats.compute_quantized_embedding_space_state(
             evaluation_entry,
@@ -155,7 +155,7 @@ class EmbeddingSpaceStats(object):
 
     @staticmethod
     def compute_quantized_embedding_spaces_animation(all_experiments_paths, all_experiments_names,
-        all_results_paths):
+                                                     all_results_paths):
 
         for i in range(len(all_experiments_paths)):
             experiment_path = all_experiments_paths[i]
@@ -165,10 +165,10 @@ class EmbeddingSpaceStats(object):
             file_names = [file_name for file_name in os.listdir(experiment_path) if 'codebook-stats' in file_name and experiment_name in file_name]
 
             # Sort file names by epoch number and iteration number as well
-            file_names = sorted(file_names, key=lambda x: 
-                (int(x.replace(experiment_name + '_', '').replace('_codebook-stats.pickle', '').split('_')[0]),
-                int(x.replace(experiment_name + '_', '').replace('_codebook-stats.pickle', '').split('_')[1]))
-            )
+            file_names = sorted(file_names, key=lambda x:
+            (int(x.replace(experiment_name + '_', '').replace('_codebook-stats.pickle', '').split('_')[0]),
+             int(x.replace(experiment_name + '_', '').replace('_codebook-stats.pickle', '').split('_')[1]))
+                                )
 
             projections = list()
 
@@ -189,7 +189,7 @@ class EmbeddingSpaceStats(object):
                     time_speaker_ids = np.repeat(
                         speaker_ids,
                         concatenated_quantized.shape[0] // 2,
-                        #concatenated_quantized.shape[0] // codebook_stats_entry['batch_size'],
+                        # concatenated_quantized.shape[0] // codebook_stats_entry['batch_size'],
                         axis=1
                     )
                     time_speaker_ids = np.concatenate(time_speaker_ids)
@@ -203,13 +203,13 @@ class EmbeddingSpaceStats(object):
                         )
                     projection = mapping.fit_transform(quantized_embedding_space)
                     projections.append({
-                        'projection': projection,
-                        'n_neighbors': n_neighbors,
-                        'n_embedding': n_embedding,
+                        'projection':       projection,
+                        'n_neighbors':      n_neighbors,
+                        'n_embedding':      n_embedding,
                         'time_speaker_ids': time_speaker_ids,
                         'encoding_indices': encoding_indices
                     })
-                    bar.update(1)    
+                    bar.update(1)
 
             cmap = 'cubehelix'
             projected_images = list()
@@ -224,11 +224,11 @@ class EmbeddingSpaceStats(object):
 
                     fig, axs = plt.subplots(1, 2, figsize=(16, 8), sharey=True)
 
-                    axs[0].scatter(projection[:-n_embedding, 0], projection[:-n_embedding, 1], s=10, c=time_speaker_ids, cmap=cmap) # audio frame colored by speaker id
-                    axs[0].scatter(projection[-n_embedding:, 0], projection[-n_embedding:, 1], s=50, marker='x', c='k', alpha=0.8) # embedding
+                    axs[0].scatter(projection[:-n_embedding, 0], projection[:-n_embedding, 1], s=10, c=time_speaker_ids, cmap=cmap)  # audio frame colored by speaker id
+                    axs[0].scatter(projection[-n_embedding:, 0], projection[-n_embedding:, 1], s=50, marker='x', c='k', alpha=0.8)  # embedding
 
-                    axs[1].scatter(projection[:-n_embedding,0], projection[:-n_embedding, 1], s=10, c=encoding_indices, cmap=cmap) # audio frame colored by encoding indices
-                    axs[1].scatter(projection[-n_embedding:, 0], projection[-n_embedding:, 1], s=50, marker='x', c=np.arange(n_embedding), cmap=cmap) # different color for each embedding
+                    axs[1].scatter(projection[:-n_embedding, 0], projection[:-n_embedding, 1], s=10, c=encoding_indices, cmap=cmap)  # audio frame colored by encoding indices
+                    axs[1].scatter(projection[-n_embedding:, 0], projection[-n_embedding:, 1], s=50, marker='x', c=np.arange(n_embedding), cmap=cmap)  # different color for each embedding
 
                     projection_file_path = '..' + os.sep + '_tmp_projection' + '.png'
                     fig.savefig(projection_file_path)
@@ -257,7 +257,7 @@ class EmbeddingSpaceStats(object):
     def _jittered_scatter(self, ax, x, y, cmap, c, s, alpha=None, marker=None):
 
         def rand_jitter(arr):
-            stdev = .01*(max(arr) - min(arr))
+            stdev = .01 * (max(arr) - min(arr))
             return arr + np.random.randn(len(arr)) * stdev
 
         ax.scatter(rand_jitter(x), rand_jitter(y), cmap=cmap, c=c, alpha=alpha, s=s, marker=marker)

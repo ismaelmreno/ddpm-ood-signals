@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from experiments.checkpoint_utils import CheckpointUtils
 from error_handling.console_logger import ConsoleLogger
@@ -102,8 +102,8 @@ class LossesPlotter(object):
         )
 
     def _plot_loss_and_perplexity_figures(self, all_results_paths, all_experiments_names, all_train_losses,
-        all_train_perplexities, all_latest_epochs, n_colors, colors):
-        
+                                          all_train_perplexities, all_latest_epochs, n_colors, colors):
+
         for i in range(len(all_experiments_names)):
             results_path = all_results_paths[i]
             experiment_name = all_experiments_names[i]
@@ -124,12 +124,12 @@ class LossesPlotter(object):
             ax = fig.add_subplot(1, 2, 1)
             ax = self._plot_fill_between(ax, colors[i], train_loss_smooth, all_experiments_names[i])
             ax = self._configure_ax(ax, title='Smoothed loss', xlabel='Epochs', ylabel='Loss',
-                legend=False)
+                                    legend=False)
 
             ax = fig.add_subplot(1, 2, 2)
             ax = self._plot_fill_between(ax, colors[i], train_perplexity_smooth, all_experiments_names[i])
             ax = self._configure_ax(ax, title='Smoothed average codebook usage',
-                xlabel='Epochs', ylabel='Perplexity', legend=False)
+                                    xlabel='Epochs', ylabel='Perplexity', legend=False)
 
             fig.savefig(output_plot_path)
             plt.close(fig)
@@ -137,7 +137,7 @@ class LossesPlotter(object):
             ConsoleLogger.success("Saved figure at path '{}'".format(output_plot_path))
 
     def _plot_merged_losses_and_perplexities_figure(self, all_results_paths, all_experiments_names, all_train_losses,
-        all_train_perplexities, all_latest_epochs, n_colors, colors):
+                                                    all_train_perplexities, all_latest_epochs, n_colors, colors):
 
         latest_epoch = all_latest_epochs[0]
         for i in range(1, len(all_latest_epochs)):
@@ -147,7 +147,7 @@ class LossesPlotter(object):
         results_path = all_results_paths[0]
         experiment_name = 'merged-loss-and-perplexity'
         output_plot_path = results_path + os.sep + experiment_name + '.png'
-        
+
         all_train_loss_smooth = list()
         all_train_perplexity_smooth = list()
         for i in range(len(all_train_perplexities)):
@@ -167,13 +167,13 @@ class LossesPlotter(object):
         for i in range(len(all_train_loss_smooth)):
             ax = self._plot_fill_between(ax, colors[i], all_train_loss_smooth[i], all_experiments_names[i])
         ax = self._configure_ax(ax, title='Smoothed loss', xlabel='Epochs', ylabel='Loss',
-            legend=True)
+                                legend=True)
 
         ax = fig.add_subplot(1, 2, 2)
         for i in range(len(all_train_perplexity_smooth)):
             ax = self._plot_fill_between(ax, colors[i], all_train_perplexity_smooth[i], all_experiments_names[i])
         ax = self._configure_ax(ax, title='Smoothed average codebook usage', xlabel='Epochs',
-            ylabel='Perplexity', legend=True)
+                                ylabel='Perplexity', legend=True)
 
         fig.savefig(output_plot_path)
         plt.close(fig)
@@ -181,7 +181,7 @@ class LossesPlotter(object):
         ConsoleLogger.success("Saved figure at path '{}'".format(output_plot_path))
 
     def _plot_merged_all_losses_figures(self, all_results_paths, all_experiments_names, all_train_losses,
-        all_train_perplexities, all_latest_epochs, colormap_name='tab20'):
+                                        all_train_perplexities, all_latest_epochs, colormap_name='tab20'):
 
         latest_epoch = all_latest_epochs[0]
         for i in range(1, len(all_latest_epochs)):
@@ -222,7 +222,7 @@ class LossesPlotter(object):
             ConsoleLogger.success("Saved figure at path '{}'".format(output_plot_path))
 
     def _plot_merged_all_losses_type(self, all_results_paths, all_experiments_names, all_train_losses,
-        all_train_perplexities, all_latest_epochs, colormap_name='tab20'):
+                                     all_train_perplexities, all_latest_epochs, colormap_name='tab20'):
 
         latest_epoch = all_latest_epochs[0]
         for i in range(1, len(all_latest_epochs)):
@@ -275,7 +275,7 @@ class LossesPlotter(object):
         return smoothed_curve
 
     def _configure_ax(self, ax, title=None, xlabel=None, ylabel=None,
-        legend=False):
+                      legend=False):
         ax.minorticks_off()
         ax.grid(linestyle='--')
         ax.set_yscale('log')
@@ -292,14 +292,14 @@ class LossesPlotter(object):
         return ax
 
     def _plot_fill_between(self, ax, color, values, label, linewidth=2):
-        linecolor = color # TODO: compute a darker linecolor than facecolor
+        linecolor = color  # TODO: compute a darker linecolor than facecolor
         facecolor = color
         mu = np.mean(values, axis=1)
         sigma = np.std(values, axis=1)
         t = np.arange(len(values))
         ax.plot(t, mu, linewidth=linewidth, label=label, c=linecolor)
-        ax.fill_between(t, mu+sigma, mu-sigma, facecolor=facecolor, alpha=0.5)
+        ax.fill_between(t, mu + sigma, mu - sigma, facecolor=facecolor, alpha=0.5)
         return ax
 
     def _get_colors_from_cmap(self, colormap_name, n_colors):
-        return [plt.get_cmap(colormap_name)(1. * i/n_colors) for i in range(n_colors)]
+        return [plt.get_cmap(colormap_name)(1. * i / n_colors) for i in range(n_colors)]

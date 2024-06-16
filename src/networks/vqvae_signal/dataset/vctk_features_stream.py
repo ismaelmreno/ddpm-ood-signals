@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from dataset.vctk_features_dataset import VCTKFeaturesDataset
 from error_handling.console_logger import ConsoleLogger
@@ -50,7 +50,7 @@ class VCTKFeaturesStream(object):
         self._validation_data = VCTKFeaturesDataset(vctk_path, 'val', self._normalizer, features_path=configuration['features_path'])
         factor = 1 if len(gpu_ids) == 0 else len(gpu_ids)
 
-        factor = 1 # FIXME
+        factor = 1  # FIXME
         self._training_batch_size = configuration['batch_size']
         self._validation_batch_size = 1
 
@@ -139,13 +139,12 @@ class VCTKFeaturesStream(object):
                 ConsoleLogger.warn('Keyboard interrupt detected. Leaving the function...')
                 return
             except:
-                error_message = 'An error occured in the data loader at {}. Current attempt: {}/{}'.format(i, current_attempt+1, attempts)
+                error_message = 'An error occured in the data loader at {}. Current attempt: {}/{}'.format(i, current_attempt + 1, attempts)
                 self._logger.exception(error_message)
                 ConsoleLogger.error(error_message)
                 initial_index = i
                 current_attempt += 1
                 continue
-
 
         ConsoleLogger.status('Compute mean of mfccs training set...')
         train_mean = np.concatenate(train_mfccs).mean(axis=0)
@@ -155,11 +154,11 @@ class VCTKFeaturesStream(object):
 
         stats = {
             'train_mean': train_mean,
-            'train_std': train_std
+            'train_std':  train_std
         }
 
         ConsoleLogger.status('Writing stats in file...')
-        with open(self._normalizer_path, 'wb') as file: # TODO: do not use hardcoded path
+        with open(self._normalizer_path, 'wb') as file:  # TODO: do not use hardcoded path
             pickle.dump(stats, file)
 
         train_mfccs_norm = (train_mfccs[0] - train_mean) / train_std
@@ -170,4 +169,4 @@ class VCTKFeaturesStream(object):
         axs[0].set_ylabel('Unnormalized')
         axs[1].imshow(train_mfccs_norm.T, aspect='auto', origin='lower')
         axs[1].set_ylabel('Normalized')
-        plt.savefig('mfcc_normalization_comparaison.png') # TODO: do not use hardcoded path
+        plt.savefig('mfcc_normalization_comparaison.png')  # TODO: do not use hardcoded path

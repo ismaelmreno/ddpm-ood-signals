@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import importlib.util
@@ -2080,6 +2079,7 @@ class DiffusionModelEncoder(nn.Module):
 
         return output
 
+
 if __name__ == "__main__":
     model = DiffusionModelUNet(
         spatial_dims=1,
@@ -2104,4 +2104,3 @@ if __name__ == "__main__":
     timesteps = torch.randn(5)
     out = model(x, timesteps)
     print(out.shape)
-

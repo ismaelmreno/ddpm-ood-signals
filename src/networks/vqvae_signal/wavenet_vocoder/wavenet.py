@@ -1,29 +1,29 @@
 # coding: utf-8
 
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2017: Ryuichi Yamamoto.                                             #
- #                                                                                   #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2017: Ryuichi Yamamoto.                                             #
+#                                                                                   #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from __future__ import with_statement, print_function, absolute_import
 
@@ -64,7 +64,7 @@ def _expand_global_features(B, T, g, bct=True):
 
 
 def receptive_field_size(total_layers, num_cycles, kernel_size,
-                         dilation=lambda x: 2**x):
+                         dilation=lambda x: 2 ** x):
     """Compute receptive field size
 
     Args:
@@ -151,7 +151,7 @@ class WaveNet(nn.Module):
 
         self.conv_layers = nn.ModuleList()
         for layer in range(layers):
-            dilation = 2**(layer % layers_per_stack)
+            dilation = 2 ** (layer % layers_per_stack)
             conv = ResidualConv1dGLU(
                 residual_channels, gate_channels,
                 kernel_size=kernel_size,
@@ -221,7 +221,7 @@ class WaveNet(nn.Module):
         Returns:
             Tensor: output, shape B x out_channels x T
         """
-        
+
         B, _, T = x.size()
 
         if g is not None:
@@ -410,4 +410,5 @@ class WaveNet(nn.Module):
                 nn.utils.remove_weight_norm(m)
             except ValueError:  # this module didn't have weight norm
                 return
+
         self.apply(remove_weight_norm)

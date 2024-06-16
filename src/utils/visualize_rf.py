@@ -50,6 +50,7 @@ def visualize_radio_signal(tensor, N=3):
     plt.tight_layout()
     plt.show()
 
+
 # Example usage
 # Assuming tensor is your input tensor of shape (batch size, 2 channels, length)
 # tensor = np.random.randn(10, 2, 100)  # Example tensor
@@ -144,4 +145,3 @@ def visualize_original_vs_reconstructed(original_tensor, reconstructed_tensor, N
 # original_tensor = np.random.randn(10, 2, 100)  # Example tensor
 # reconstructed_tensor = np.random.randn(10, 2, 100)  # Example tensor
 # visualize_original_vs_reconstructed(original_tensor, reconstructed_tensor, N=3)
-

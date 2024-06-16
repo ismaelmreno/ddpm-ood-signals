@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from dataset.vctk_dataset import VCTKDataset
 from dataset.vctk import VCTK
@@ -48,7 +48,7 @@ class VCTKSpeechStream(object):
         self._training_loader = DataLoader(
             self._training_data,
             batch_size=configuration['batch_size'],
-            #batch_size=1,
+            # batch_size=1,
             shuffle=True,
             num_workers=configuration['num_workers'],
             pin_memory=use_cuda
@@ -56,7 +56,7 @@ class VCTKSpeechStream(object):
         self._validation_loader = DataLoader(
             self._validation_data,
             batch_size=configuration['batch_size'],
-            #batch_size=1,
+            # batch_size=1,
             num_workers=configuration['num_workers'],
             pin_memory=use_cuda
         )
@@ -117,8 +117,8 @@ class VCTKSpeechStream(object):
             ConsoleLogger.status('Val features directory already created at path: {}'.format(val_features_path))
 
         def process(loader, output_dir, input_features_name, output_features_name,
-            rate, input_filters_number, output_filters_number, input_target_shape,
-            augment_output_features, export_one_hot_features):
+                    rate, input_filters_number, output_filters_number, input_target_shape,
+                    augment_output_features, export_one_hot_features):
 
             initial_index = 0
             attempts = 10
@@ -164,18 +164,18 @@ class VCTKSpeechStream(object):
 
                         # TODO: add an option in configuration to save quantized/one_hot or not
                         output = {
-                            'preprocessed_audio': preprocessed_audio,
-                            'wav_filename': wav_filename,
-                            'input_features': input_features,
-                            'one_hot': one_hot if export_one_hot_features else np.array([]),
-                            'quantized': np.array([]),
-                            'speaker_id': speaker_id,
-                            'output_features': output_features,
-                            'shifting_time': shifting_time,
+                            'preprocessed_audio':    preprocessed_audio,
+                            'wav_filename':          wav_filename,
+                            'input_features':        input_features,
+                            'one_hot':               one_hot if export_one_hot_features else np.array([]),
+                            'quantized':             np.array([]),
+                            'speaker_id':            speaker_id,
+                            'output_features':       output_features,
+                            'shifting_time':         shifting_time,
                             'random_starting_index': random_starting_index,
-                            'preprocessed_length': preprocessed_length,
-                            'sampling_rate': sampling_rate,
-                            'top_db': top_db
+                            'preprocessed_length':   preprocessed_length,
+                            'sampling_rate':         sampling_rate,
+                            'top_db':                top_db
                         }
 
                         with open(output_path, 'wb') as file:
@@ -196,7 +196,7 @@ class VCTKSpeechStream(object):
                     ConsoleLogger.warn('Keyboard interrupt detected. Leaving the function...')
                     return
                 except:
-                    error_message = 'An error occured in the data loader at {}/{}. Current attempt: {}/{}'.format(output_dir, i, current_attempt+1, attempts)
+                    error_message = 'An error occured in the data loader at {}/{}. Current attempt: {}/{}'.format(output_dir, i, current_attempt + 1, attempts)
                     self._logger.exception(error_message)
                     ConsoleLogger.error(error_message)
                     initial_index = i

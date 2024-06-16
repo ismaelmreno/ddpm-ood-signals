@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from error_handling.console_logger import ConsoleLogger
 
@@ -40,9 +40,9 @@ from itertools import cycle
 
 
 class AlignmentStats(object):
-    
+
     def __init__(self, data_stream, vctk, configuration, device, model,
-        results_path, experiment_name, alignment_subset):
+                 results_path, experiment_name, alignment_subset):
 
         self._data_stream = data_stream
         self._vctk = vctk
@@ -77,17 +77,17 @@ class AlignmentStats(object):
                 speaker_id = wav_filenames[0][0].split('/')[-2]
                 if speaker_id not in speaker_id_folders:
                     # TODO: log the missing folders
-                    #ConsoleLogger.warn('speaker id {} not found'.format(speaker_id))
+                    # ConsoleLogger.warn('speaker id {} not found'.format(speaker_id))
                     continue
 
                 for i in range(len(shifting_times)):
                     wav_filename = wav_filenames[0][i]
                     utterence_key = wav_filename.split('/')[-1].replace('.wav', '')
                     phonemes_alignment_path = os.sep.join(wav_filename.split('/')[:-3]) + os.sep + 'phonemes' + os.sep + utterence_key.split('_')[0] + os.sep \
-                        + utterence_key + '.TextGrid'
+                                              + utterence_key + '.TextGrid'
                     if not os.path.isfile(phonemes_alignment_path):
                         # TODO: log this warn instead of print it
-                        #ConsoleLogger.warn('File {} not found'.format(phonemes_alignment_path))
+                        # ConsoleLogger.warn('File {} not found'.format(phonemes_alignment_path))
                         break
 
                     shifting_time = shifting_times[i].detach().cpu().item()
@@ -113,10 +113,10 @@ class AlignmentStats(object):
                             if interval == tg.tiers[1][-1] and len(phonemes) != int(data_length / desired_time_interval):
                                 previous_interval = tg.tiers[1][-2]
                                 ConsoleLogger.warn("{}/{} phonemes aligned. Add the last valid phoneme '{}' in the list to have the correct number.\n"
-                                    "Sanity checks to find the possible cause:\n"
-                                    "current_target_time_index < (data_length / desired_time_interval): {}\n"
-                                    "target_time_scale[current_target_time_index] >= interval.minTime: {}\n"
-                                    "target_time_scale[current_target_time_index] <= interval.maxTime: {}".format(
+                                                   "Sanity checks to find the possible cause:\n"
+                                                   "current_target_time_index < (data_length / desired_time_interval): {}\n"
+                                                   "target_time_scale[current_target_time_index] >= interval.minTime: {}\n"
+                                                   "target_time_scale[current_target_time_index] <= interval.maxTime: {}".format(
                                     len(phonemes), int(data_length / desired_time_interval), previous_interval.mark,
                                     current_target_time_index < (data_length / desired_time_interval),
                                     target_time_scale[current_target_time_index] >= previous_interval.minTime,
@@ -135,8 +135,8 @@ class AlignmentStats(object):
                         phonemes_counter[interval.mark] += 1
                         total_phonemes_apparations += 1
                         while current_target_time_index < (data_length / desired_time_interval) and \
-                            target_time_scale[current_target_time_index] >= interval.minTime and \
-                            target_time_scale[current_target_time_index] <= interval.maxTime:
+                                target_time_scale[current_target_time_index] >= interval.minTime and \
+                                target_time_scale[current_target_time_index] <= interval.maxTime:
                             phonemes.append(interval.mark)
                             current_target_time_index += 1
                         if len(phonemes) == int(data_length / desired_time_interval):
@@ -144,21 +144,21 @@ class AlignmentStats(object):
                     if len(phonemes) != int(data_length / desired_time_interval):
                         intervals = ['min:{} max:{} mark:{}'.format(interval.minTime, interval.maxTime, interval.mark) for interval in tg.tiers[1]]
                         ConsoleLogger.error('Error - min:{} max:{} shifting:{} target_time_scale: {} intervals: {}\n'
-                            '#phonemes:{} phonemes:{}\n'
-                            'wav filename:{} phonemes alignment path:{}'.format(
+                                            '#phonemes:{} phonemes:{}\n'
+                                            'wav filename:{} phonemes alignment path:{}'.format(
                             interval.minTime, interval.maxTime, shifting_time, target_time_scale, intervals,
                             len(phonemes), phonemes, wav_filename, phonemes_alignment_path))
                     else:
                         extended_alignment_dataset.append((utterence_key, phonemes))
 
         groundtruth_alignments_path = self._results_path + os.sep + \
-            'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
+                                      'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
         with open(groundtruth_alignments_path, 'wb') as f:
             pickle.dump({
-                'desired_time_interval': desired_time_interval,
+                'desired_time_interval':      desired_time_interval,
                 'extended_alignment_dataset': extended_alignment_dataset,
-                'possible_phonemes': list(possible_phonemes),
-                'phonemes_counter': phonemes_counter,
+                'possible_phonemes':          list(possible_phonemes),
+                'phonemes_counter':           phonemes_counter,
                 'total_phonemes_apparations': total_phonemes_apparations
             }, f)
 
@@ -169,7 +169,7 @@ class AlignmentStats(object):
 
         alignments_dic = None
         groundtruth_alignments_path = self._results_path + os.sep + \
-            'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
+                                      'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
         with open(groundtruth_alignments_path, 'rb') as f:
             alignments_dic = pickle.load(f)
 
@@ -180,9 +180,9 @@ class AlignmentStats(object):
         total_phonemes_apparations = alignments_dic['total_phonemes_apparations']
 
         possibles_phonemes_number = len(possible_phonemes)
-        #ConsoleLogger.status('List of phonemes: {}'.format(possible_phonemes)) # TODO: log it instead of print it
-        #ConsoleLogger.status('Number of phonemes: {}'.format(possibles_phonemes_number)) # TODO: log it instead of print it
-        phonemes_indices = {possible_phonemes[i]:i for i in range(possibles_phonemes_number)}
+        # ConsoleLogger.status('List of phonemes: {}'.format(possible_phonemes)) # TODO: log it instead of print it
+        # ConsoleLogger.status('Number of phonemes: {}'.format(possibles_phonemes_number)) # TODO: log it instead of print it
+        phonemes_indices = {possible_phonemes[i]: i for i in range(possibles_phonemes_number)}
         bigrams = np.zeros((possibles_phonemes_number, possibles_phonemes_number), dtype=int)
         previous_phonemes_counter = np.zeros((possibles_phonemes_number), dtype=int)
 
@@ -195,8 +195,8 @@ class AlignmentStats(object):
                 previous_phoneme = current_phoneme
 
         if wo_diag:
-            np.fill_diagonal(bigrams, 0) # Zeroes the diagonal values
-        previous_phonemes_counter[previous_phonemes_counter == 0] = 1 # Replace the zeros of the previous phonemes number by one to avoid dividing by zeros
+            np.fill_diagonal(bigrams, 0)  # Zeroes the diagonal values
+        previous_phonemes_counter[previous_phonemes_counter == 0] = 1  # Replace the zeros of the previous phonemes number by one to avoid dividing by zeros
         bigrams = normalize(bigrams / previous_phonemes_counter, axis=1, norm='l1')
         round_bigrams = np.around(bigrams.copy(), decimals=2)
 
@@ -231,14 +231,14 @@ class AlignmentStats(object):
         alignments_dic = None
 
         groundtruth_alignments_path = self._results_path + os.sep + \
-            'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
+                                      'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
         with open(groundtruth_alignments_path, 'rb') as f:
             alignments_dic = pickle.load(f)
 
         desired_time_interval = alignments_dic['desired_time_interval']
         phonemes_counter = alignments_dic['phonemes_counter']
         total_phonemes_apparations = alignments_dic['total_phonemes_apparations']
-        
+
         phonemes_frequency = dict()
         for key, value in phonemes_counter.items():
             phonemes_frequency[key] = value * 100 / total_phonemes_apparations
@@ -256,7 +256,7 @@ class AlignmentStats(object):
     def compute_groundtruth_average_phonemes_number(self):
         alignments_dic = None
         groundtruth_alignments_path = self._results_path + os.sep + \
-            'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
+                                      'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
         with open(groundtruth_alignments_path, 'rb') as f:
             alignments_dic = pickle.load(f)
 
@@ -315,14 +315,14 @@ class AlignmentStats(object):
                         encodings_counter[str_index] += 1
 
         empirical_alignments_path = self._results_path + os.sep + self._experiment_name + \
-            '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
+                                    '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
         with open(empirical_alignments_path, 'wb') as f:
             pickle.dump({
-                'all_alignments': all_alignments,
-                'encodings_counter': encodings_counter,
-                'desired_time_interval': desired_time_interval,
+                'all_alignments':            all_alignments,
+                'encodings_counter':         encodings_counter,
+                'desired_time_interval':     desired_time_interval,
                 'total_indices_apparations': total_indices_apparations,
-                'num_embeddings': self._configuration['num_embeddings']
+                'num_embeddings':            self._configuration['num_embeddings']
             }, f)
 
     def compute_empirical_bigrams_matrix(self, wo_diag=True):
@@ -332,7 +332,7 @@ class AlignmentStats(object):
 
         alignments_dic = None
         empirical_alignments_path = self._results_path + os.sep + self._experiment_name + \
-            '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
+                                    '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
         with open(empirical_alignments_path, 'rb') as f:
             alignments_dic = pickle.load(f)
 
@@ -358,8 +358,8 @@ class AlignmentStats(object):
                 previous_encoding_index = current_encoding_index
 
         if wo_diag:
-            np.fill_diagonal(bigrams, 0) # Zeroes the diagonal values
-        previous_index_counter[previous_index_counter == 0] = 1 # Replace the zeros of the previous phonemes number by one to avoid dividing by zeros
+            np.fill_diagonal(bigrams, 0)  # Zeroes the diagonal values
+        previous_index_counter[previous_index_counter == 0] = 1  # Replace the zeros of the previous phonemes number by one to avoid dividing by zeros
         bigrams = normalize(bigrams / previous_index_counter, axis=1, norm='l1')
         round_bigrams = np.around(bigrams.copy(), decimals=2)
 
@@ -393,7 +393,7 @@ class AlignmentStats(object):
 
         alignments_dic = None
         empirical_alignments_path = self._results_path + os.sep + self._experiment_name + \
-            '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
+                                    '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
         with open(empirical_alignments_path, 'rb') as f:
             alignments_dic = pickle.load(f)
 
@@ -418,20 +418,20 @@ class AlignmentStats(object):
     def compute_clustering_metrics(self):
         groundtruth_alignments_dic = None
         groundtruth_alignments_path = self._results_path + os.sep + \
-            'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
+                                      'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
         with open(groundtruth_alignments_path, 'rb') as f:
             groundtruth_alignments_dic = pickle.load(f)
 
         empirical_alignments_dic = None
         empirical_alignments_path = self._results_path + os.sep + self._experiment_name + \
-            '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
+                                    '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
         with open(empirical_alignments_path, 'rb') as f:
             empirical_alignments_dic = pickle.load(f)
 
         groundtruth_alignments = np.array(groundtruth_alignments_dic['extended_alignment_dataset'])
         possible_phonemes = list(groundtruth_alignments_dic['possible_phonemes'])
         empirical_alignments = np.array(empirical_alignments_dic['all_alignments'])
-        phonemes_indices = {possible_phonemes[i]:i for i in range(len(possible_phonemes))}
+        phonemes_indices = {possible_phonemes[i]: i for i in range(len(possible_phonemes))}
 
         ConsoleLogger.status('#{} possible phonemes: {}'.format(len(possible_phonemes), possible_phonemes))
         ConsoleLogger.status('# of raw groundtruth alignments: {}'.format(len(groundtruth_alignments)))
@@ -444,7 +444,7 @@ class AlignmentStats(object):
         alignment_length = ((self._configuration['length'] / self._configuration['sampling_rate']) * 100) / 2
 
         for (utterence_key, alignment) in groundtruth_alignments:
-            if len(alignment) != alignment_length: # FIXME
+            if len(alignment) != alignment_length:  # FIXME
                 ConsoleLogger.error('len(alignment) != alignment_length: {}'.format(len(alignment)))
                 continue
             groundtruth_utterance_keys.add(utterence_key)
@@ -535,7 +535,7 @@ class AlignmentStats(object):
             scores[current_experiment_name][possible_metric_found][0].append(int(file.split('_' + possible_metric_found)[0].split('-')[1]))
             scores[current_experiment_name][possible_metric_found][1].append(float(np.load(result_path + os.sep + file)))
 
-        #print(json.dumps(scores, sort_keys=True, indent=2)) # TODO: log this line instead of printting it
+        # print(json.dumps(scores, sort_keys=True, indent=2)) # TODO: log this line instead of printting it
 
         fig, axs = plt.subplots(
             len(possible_metric_names),
@@ -544,7 +544,7 @@ class AlignmentStats(object):
             sharex=True
         )
 
-        cycol = cycle('bgr') # TODO: replace by random color selection with the number of possible metrics
+        cycol = cycle('bgr')  # TODO: replace by random color selection with the number of possible metrics
 
         def underscored_text_to_uppercased(text):
             return ' '.join([word[0].upper() + word[1:] for word in text.replace('_', ' ').split(' ')])
@@ -553,7 +553,7 @@ class AlignmentStats(object):
             i = 0
             for clustering_metric in scores[current_experiment_name].keys():
                 axs[i].plot(scores[current_experiment_name][clustering_metric][0],
-                    scores[current_experiment_name][clustering_metric][1], color=next(cycol))
+                            scores[current_experiment_name][clustering_metric][1], color=next(cycol))
                 axs[i].set_ylabel(underscored_text_to_uppercased(clustering_metric), fontsize=15)
                 i += 1
         fig.suptitle(
@@ -614,8 +614,8 @@ class AlignmentStats(object):
             sharex=True
         )
 
-        #print(json.dumps(scores, sort_keys=True, indent=2)) # TODO: log this line instead of printting it
-        #print(seeds) # TODO: log this line instead of printting it
+        # print(json.dumps(scores, sort_keys=True, indent=2)) # TODO: log this line instead of printting it
+        # print(seeds) # TODO: log this line instead of printting it
 
         def underscored_text_to_uppercased(text):
             return ' '.join([word[0].upper() + word[1:] for word in text.replace('_', ' ').split(' ')])
@@ -636,7 +636,7 @@ class AlignmentStats(object):
                 height = round(rect.get_height(), 3) if round_height else rect.get_height()
                 ax.annotate('{}'.format(height),
                             xy=(rect.get_x() + rect.get_width() / 2, height),
-                            xytext=(offset[xpos]*3, 3),  # use 3 points offset
+                            xytext=(offset[xpos] * 3, 3),  # use 3 points offset
                             textcoords="offset points",  # in both directions
                             ha=ha[xpos], va='bottom')
 
@@ -675,20 +675,20 @@ class AlignmentStats(object):
     def print_biggest_adjusted_scores(self):
         groundtruth_alignments_dic = None
         groundtruth_alignments_path = self._results_path + os.sep + \
-            'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
+                                      'vctk_{}_groundtruth_alignments.pickle'.format(self._alignment_subset)
         with open(groundtruth_alignments_path, 'rb') as f:
             groundtruth_alignments_dic = pickle.load(f)
 
         empirical_alignments_dic = None
         empirical_alignments_path = self._results_path + os.sep + self._experiment_name + \
-            '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
+                                    '_vctk_{}_empirical_alignments.pickle'.format(self._alignment_subset)
         with open(empirical_alignments_path, 'rb') as f:
             empirical_alignments_dic = pickle.load(f)
 
         groundtruth_alignments = np.array(groundtruth_alignments_dic['extended_alignment_dataset'])
         possible_phonemes = list(groundtruth_alignments_dic['possible_phonemes'])
         empirical_alignments = np.array(empirical_alignments_dic['all_alignments'])
-        phonemes_indices = {possible_phonemes[i]:i for i in range(len(possible_phonemes))}
+        phonemes_indices = {possible_phonemes[i]: i for i in range(len(possible_phonemes))}
 
         ConsoleLogger.status('#{} possible phonemes: {}'.format(len(possible_phonemes), possible_phonemes))
         ConsoleLogger.status('# of raw groundtruth alignments: {}'.format(len(groundtruth_alignments)))
@@ -701,7 +701,7 @@ class AlignmentStats(object):
         alignment_length = ((self._configuration['length'] / self._configuration['sampling_rate']) * 100) / 2
 
         for (utterence_key, alignment) in groundtruth_alignments:
-            if len(alignment) != alignment_length: # FIXME
+            if len(alignment) != alignment_length:  # FIXME
                 continue
             groundtruth_utterance_keys.add(utterence_key)
             final_groundtruth_alignments.append([phonemes_indices[alignment[i]] for i in range(len(alignment))])

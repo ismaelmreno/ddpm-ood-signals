@@ -1,4 +1,4 @@
-#from https://github.com/pytorch/audio/blob/master/torchaudio/datasets/vctk.py
+# from https://github.com/pytorch/audio/blob/master/torchaudio/datasets/vctk.py
 
 import os
 from torch.utils.data import Dataset
@@ -7,10 +7,12 @@ import shutil
 import random
 
 import pathlib
+
 AUDIO_EXTENSIONS = [
     '.wav', '.mp3', '.flac', '.sph', '.ogg', '.opus',
     '.WAV', '.MP3', '.FLAC', '.SPH', '.OGG', '.OPUS',
 ]
+
 
 def is_audio_file(filename):
     return any(filename.endswith(extension) for extension in AUDIO_EXTENSIONS)
@@ -32,6 +34,7 @@ def make_manifest(dir):
                     audios.append(item)
     return audios
 
+
 def load_txts(dir):
     """Create a dictionary with all the text of the audio transcriptions."""
     utterences = dict()
@@ -50,6 +53,7 @@ def load_txts(dir):
                             fname).rsplit(".", 1)[0]
                         utterences[fname_no_ext] = f.readline()
     return utterences
+
 
 class VCTK(Dataset):
     url = 'http://homepages.inf.ed.ac.uk/jyamagis/release/VCTK-Corpus.tar.gz'
@@ -91,12 +95,12 @@ class VCTK(Dataset):
         self.speaker_dic = self.make_speaker_dic(dset_abs_path)
 
         random.shuffle(self.audios)
-        split = int(len(self.audios)*ratio)
+        split = int(len(self.audios) * ratio)
 
         self.audios_train = self.audios[:split]
         self.audios_val = self.audios[split:]
 
-    def _check_exists(self,dset_abs_path):
+    def _check_exists(self, dset_abs_path):
         return os.path.exists(os.path.join(dset_abs_path, "speaker-info.txt"))
 
     def download(self):

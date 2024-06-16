@@ -1,26 +1,26 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2018 Sungwon Kim                                                    #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2018 Sungwon Kim                                                    #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from clarinet.data import LJspeechDataset, collate_fn, collate_fn_synthesize
 from clarinet.wavenet import Wavenet
@@ -31,6 +31,7 @@ from torch.utils.data import Dataset, DataLoader
 import librosa
 import os
 import argparse
+
 
 def build_model():
     model = Wavenet(out_channels=2,
@@ -51,9 +52,10 @@ def load_checkpoint(path, model):
     model.load_state_dict(checkpoint["state_dict"])
     return model
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train WaveNet of LJSpeech',
-                                    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--data_path', type=str, default='../DATASETS/ljspeech/', help='Dataset Path')
     parser.add_argument('--sample_path', type=str, default='../samples', help='Sample Path')
     parser.add_argument('--save', '-s', type=str, default='../params', help='Folder to save checkpoints.')
@@ -81,7 +83,6 @@ if __name__ == "__main__":
 
     parser.add_argument('--num_workers', type=int, default=1, help='Number of workers')
 
-
     args = parser.parse_args()
 
     use_cuda = torch.cuda.is_available()
@@ -97,9 +98,9 @@ if __name__ == "__main__":
     test_dataset = LJspeechDataset(args.data_path, False, 0.1)
 
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, collate_fn=collate_fn,
-                            num_workers=args.num_workers, pin_memory=True)
+                              num_workers=args.num_workers, pin_memory=True)
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, collate_fn=collate_fn_synthesize,
-                            num_workers=args.num_workers, pin_memory=True)
+                             num_workers=args.num_workers, pin_memory=True)
 
     step = args.load_step
     path = os.path.join(args.load, args.model_name, "checkpoint_step{:09d}_ema.pth".format(step))
@@ -120,9 +121,8 @@ if __name__ == "__main__":
             with torch.no_grad():
                 y_gen = model.generate(x.size()[-1], c).squeeze()
             torch.cuda.synchronize()
-            print('{} seconds'.format(time.time()-start_time))
+            print('{} seconds'.format(time.time() - start_time))
             wav = y_gen.numpy()
             wav_name = '{}/{}/generate_{}_{}.wav'.format(args.sample_path, args.model_name, step, i)
             librosa.output.write_wav(wav_name, wav, sr=22050)
             del y_gen
-

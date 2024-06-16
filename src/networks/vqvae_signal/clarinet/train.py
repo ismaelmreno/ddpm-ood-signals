@@ -1,26 +1,26 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2018 Sungwon Kim                                                    #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2018 Sungwon Kim                                                    #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from clarinet.data import LJspeechDataset, collate_fn
 from clarinet.modules import ExponentialMovingAverage, GaussianLoss
@@ -38,6 +38,7 @@ import argparse
 import json
 import time
 import gc
+
 
 def build_model():
     model = Wavenet(out_channels=2,
@@ -144,16 +145,16 @@ def evaluate(model, ema=None):
 def save_checkpoint(model, optimizer, global_step, global_epoch, ema=None):
     checkpoint_path = os.path.join(args.save, args.model_name, "checkpoint_step{:09d}.pth".format(global_step))
     optimizer_state = optimizer.state_dict()
-    torch.save({"state_dict": model.state_dict(),
-                "optimizer": optimizer_state,
-                "global_step": global_step,
+    torch.save({"state_dict":   model.state_dict(),
+                "optimizer":    optimizer_state,
+                "global_step":  global_step,
                 "global_epoch": global_epoch}, checkpoint_path)
     if ema is not None:
         averaged_model = clone_as_averaged_model(model, ema)
         checkpoint_path = os.path.join(args.save, args.model_name, "checkpoint_step{:09d}_ema.pth".format(global_step))
-        torch.save({"state_dict": averaged_model.state_dict(),
-                    "optimizer": optimizer_state,
-                    "global_step": global_step,
+        torch.save({"state_dict":   averaged_model.state_dict(),
+                    "optimizer":    optimizer_state,
+                    "global_step":  global_step,
                     "global_epoch": global_epoch}, checkpoint_path)
 
 
@@ -180,13 +181,14 @@ def load_checkpoint(step, model, optimizer, ema=None):
                 ema.register(name, param.data)
     return model, optimizer, ema
 
+
 if __name__ == '__main__':
     torch.backends.cudnn.benchmark = True
     torch.multiprocessing.freeze_support()
     np.set_printoptions(precision=4)
 
     parser = argparse.ArgumentParser(description='Train WaveNet of LJSpeech',
-                                    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--data_path', type=str, default='../DATASETS/ljspeech/', help='Dataset Path')
     parser.add_argument('--sample_path', type=str, default='../samples', help='Sample Path')
     parser.add_argument('--save', '-s', type=str, default='../params', help='Folder to save checkpoints.')
@@ -234,7 +236,7 @@ if __name__ == '__main__':
     train_dataset = LJspeechDataset(args.data_path, True, 0.1)
     test_dataset = LJspeechDataset(args.data_path, False, 0.1)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, collate_fn=collate_fn,
-                            num_workers=args.num_workers, pin_memory=True)
+                              num_workers=args.num_workers, pin_memory=True)
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, collate_fn=collate_fn,
                              num_workers=args.num_workers, pin_memory=True)
 
@@ -271,7 +273,7 @@ if __name__ == '__main__':
         training_epoch_loss = train(epoch, model, optimizer, ema)
         with torch.no_grad():
             test_epoch_loss = evaluate(model, ema)
-        
+
         state['training_loss'] = training_epoch_loss
         state['eval_loss'] = test_epoch_loss
         state['epoch'] = epoch

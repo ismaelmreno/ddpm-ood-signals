@@ -1,26 +1,26 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (c) 2017 Sean Naren                                                     #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (c) 2017 Sean Naren                                                     #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from dataset.audio_parser import AudioParser
 from dataset.audio_loader import AudioLoader
@@ -35,15 +35,14 @@ import os
 
 
 class SpectrogramParser(AudioParser):
-
     default_audio_conf = {
-        'window_size': 0.02,
-        'window_stride': 0.01, # timestep
-        'noise_prob': 0.4,
-        'sample_rate': 16000,
-        'noise_dir': None,
-        'noise_levels': (0.0, 0.5),
-        'window': 'hamming'
+        'window_size':   0.02,
+        'window_stride': 0.01,  # timestep
+        'noise_prob':    0.4,
+        'sample_rate':   16000,
+        'noise_dir':     None,
+        'noise_levels':  (0.0, 0.5),
+        'window':        'hamming'
     }
 
     def __init__(self, audio_conf=default_audio_conf, normalize=False, augment=False):
@@ -54,8 +53,8 @@ class SpectrogramParser(AudioParser):
         :param augment(default False):  Apply random tempo and gain perturbations
         """
         super(SpectrogramParser, self).__init__()
-        windows = {'hamming': scipy.signal.hamming, 'hann': scipy.signal.hann, 'blackman': scipy.signal.blackman,
-           'bartlett': scipy.signal.bartlett}
+        windows = {'hamming':  scipy.signal.hamming, 'hann': scipy.signal.hann, 'blackman': scipy.signal.blackman,
+                   'bartlett': scipy.signal.bartlett}
         self.window_stride = audio_conf['window_stride']
         self.window_size = audio_conf['window_size']
         self.sample_rate = audio_conf['sample_rate']
@@ -63,7 +62,7 @@ class SpectrogramParser(AudioParser):
         self.normalize = normalize
         self.augment = augment
         self.noiseInjector = NoiseInjector(audio_conf['noise_dir'], self.sample_rate,
-                                            audio_conf['noise_levels']) if audio_conf.get(
+                                           audio_conf['noise_levels']) if audio_conf.get(
             'noise_dir') is not None else None
         self.noise_prob = audio_conf.get('noise_prob')
 
@@ -101,7 +100,7 @@ class SpectrogramParser(AudioParser):
         raise NotImplementedError
 
     def _load_randomly_augmented_audio(self, path, sample_rate=16000, tempo_range=(0.85, 1.15),
-        gain_range=(-6, 8)):
+                                       gain_range=(-6, 8)):
         """
         Picks tempo and gain uniformly, applies it to the utterance by using sox utility.
         Returns the augmented utterance.
@@ -111,7 +110,7 @@ class SpectrogramParser(AudioParser):
         low_gain, high_gain = gain_range
         gain_value = np.random.uniform(low=low_gain, high=high_gain)
         audio = self._augment_audio_with_sox(path=path, sample_rate=sample_rate,
-            tempo=tempo_value, gain=gain_value)
+                                             tempo=tempo_value, gain=gain_value)
         return audio
 
     def _augment_audio_with_sox(self, path, sample_rate, tempo, gain):
@@ -122,8 +121,8 @@ class SpectrogramParser(AudioParser):
             augmented_filename = augmented_file.name
             sox_augment_params = ["tempo", "{:.3f}".format(tempo), "gain", "{:.3f}".format(gain)]
             sox_params = "sox \"{}\" -r {} -c 1 -b 16 -e si {} {} >/dev/null 2>&1".format(path, sample_rate,
-                augmented_filename,
-                " ".join(sox_augment_params))
+                                                                                          augmented_filename,
+                                                                                          " ".join(sox_augment_params))
             os.system(sox_params)
             y = AudioLoader.load(augmented_filename)
             return y

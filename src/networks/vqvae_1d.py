@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
+
 class Encoder(nn.Module):
     def __init__(self, in_channels, hidden_dim, latent_dim):
         super(Encoder, self).__init__()
@@ -13,6 +14,7 @@ class Encoder(nn.Module):
         x = F.relu(self.conv1(x))
         x = F.relu(self.conv2(x))
         return x
+
 
 class VectorQuantizer(nn.Module):
     def __init__(self, num_embeddings, embedding_dim, commitment_cost):
@@ -47,6 +49,7 @@ class VectorQuantizer(nn.Module):
 
         return quantized, loss
 
+
 class Decoder(nn.Module):
     def __init__(self, latent_dim, hidden_dim, out_channels):
         super(Decoder, self).__init__()
@@ -57,6 +60,7 @@ class Decoder(nn.Module):
         x = F.relu(self.conv1(x))
         x = self.conv2(x)
         return x
+
 
 class VQVAE(nn.Module):
     def __init__(self, in_channels, hidden_dim, latent_dim, num_embeddings, commitment_cost):
@@ -71,6 +75,7 @@ class VQVAE(nn.Module):
         x_recon = self.decoder(quantized)
         recon_loss = F.mse_loss(x_recon, x)
         return x_recon, recon_loss + vq_loss
+
 
 if __name__ == "__main__":
     # Parámetros del modelo

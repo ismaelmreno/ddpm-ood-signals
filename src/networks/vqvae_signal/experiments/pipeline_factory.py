@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from experiments.device_configuration import DeviceConfiguration
 from experiments.checkpoint_utils import CheckpointUtils
@@ -48,13 +48,13 @@ class PipelineFactory(object):
         if configuration['decoder_type'] == 'deconvolutional':
             vqvae_model = ConvolutionalVQVAE(configuration, device_configuration.device).to(device_configuration.device)
             evaluator = Evaluator(device_configuration.device, vqvae_model, data_stream, configuration,
-                results_path, experiment_name)
+                                  results_path, experiment_name)
         else:
             raise NotImplementedError("Decoder type '{}' isn't implemented for now".format(configuration['decoder_type']))
 
         if configuration['trainer_type'] == 'convolutional':
             trainer = ConvolutionalTrainer(device_configuration.device, data_stream,
-                configuration, experiments_path, experiment_name, **{'model': vqvae_model})
+                                           configuration, experiments_path, experiment_name, **{'model': vqvae_model})
         else:
             raise NotImplementedError("Trainer type '{}' isn't implemented for now".format(configuration['trainer_type']))
 
@@ -130,7 +130,7 @@ class PipelineFactory(object):
                 # Create the model and map it to the specified device
                 vqvae_model = ConvolutionalVQVAE(configuration, device_configuration.device).to(device_configuration.device)
                 evaluator = Evaluator(device_configuration.device, vqvae_model, data_stream,
-                    configuration, results_path, experiment_name)
+                                      configuration, results_path, experiment_name)
 
                 # Load the model and optimizer state dicts
                 vqvae_model, vqvae_optimizer = load_state_dicts(vqvae_model, checkpoint, 'model', 'optimizer')
@@ -140,12 +140,12 @@ class PipelineFactory(object):
             # Temporary backward compatibility
             if 'trainer_type' not in configuration:
                 ConsoleLogger.error("trainer_type was not found in configuration file. Use 'convolutional' by default.")
-                configuration['trainer_type'] = 'convolutional' 
+                configuration['trainer_type'] = 'convolutional'
 
             if configuration['trainer_type'] == 'convolutional':
                 trainer = ConvolutionalTrainer(device_configuration.device, data_stream,
-                    configuration, experiments_path, experiment_name, **{'model': vqvae_model, 
-                    'optimizer': vqvae_optimizer})
+                                               configuration, experiments_path, experiment_name, **{'model':     vqvae_model,
+                                                                                                    'optimizer': vqvae_optimizer})
             else:
                 raise NotImplementedError("Trainer type '{}' isn't implemented for now".format(configuration['trainer_type']))
 

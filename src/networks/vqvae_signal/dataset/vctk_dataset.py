@@ -1,28 +1,28 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2019 Charly Lamothe                                                 #
- #                                                                                   #
- # This file is part of VQ-VAE-Speech.                                               #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2019 Charly Lamothe                                                 #
+#                                                                                   #
+# This file is part of VQ-VAE-Speech.                                               #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from dataset.vctk import VCTK
 from speech_utils.mu_law import MuLaw
@@ -50,7 +50,7 @@ class VCTKDataset(Dataset):
 
     def _preprocessing(self, audio, quantized):
         if self._length is not None:
-            if len(audio) <= self._length :
+            if len(audio) <= self._length:
                 # padding
                 pad = self._length - len(audio)
                 audio = np.concatenate(
@@ -72,8 +72,8 @@ class VCTKDataset(Dataset):
         )[quantized]
         one_hot = np.expand_dims(one_hot.T, 2)
 
-        audio = np.expand_dims(audio, 0) # expand channel
-        audio = np.expand_dims(audio, -1) # expand height
+        audio = np.expand_dims(audio, 0)  # expand channel
+        audio = np.expand_dims(audio, -1)  # expand height
 
         # target
         quantized = np.expand_dims(quantized, 1)
@@ -83,19 +83,19 @@ class VCTKDataset(Dataset):
     @staticmethod
     def preprocess_audio(audio, length, expand_dims=False):
         if length is not None:
-            if len(audio) <= length :
+            if len(audio) <= length:
                 # padding
                 pad = length - len(audio)
                 audio = np.concatenate(
                     (audio, np.zeros(pad, dtype=np.float32)))
             else:
                 # triming
-                start = random.randint(0, len(audio) -length  - 1)
+                start = random.randint(0, len(audio) - length - 1)
                 audio = audio[start:start + length]
 
         if expand_dims:
-            audio = np.expand_dims(audio, 0) # expand channel
-            audio = np.expand_dims(audio, -1) # expand height
+            audio = np.expand_dims(audio, 0)  # expand channel
+            audio = np.expand_dims(audio, -1)  # expand height
 
         return audio
 
@@ -113,7 +113,7 @@ class VCTKDataset(Dataset):
                 if interval.mark != 'sil':
                     break
                 detected_sil_duration += float(interval.maxTime) - float(interval.minTime)
- 
+
         audio, trimming_time = self._load_wav(
             wav_filename,
             self._sampling_rate,
@@ -162,4 +162,3 @@ class VCTKDataset(Dataset):
     @property
     def utterences(self):
         return self._utterences
-

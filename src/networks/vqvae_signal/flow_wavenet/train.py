@@ -1,26 +1,26 @@
- #####################################################################################
- # MIT License                                                                       #
- #                                                                                   #
- # Copyright (C) 2018 Sungwon Kim                                                    #
- #                                                                                   #
- #   Permission is hereby granted, free of charge, to any person obtaining a copy    #
- #   of this software and associated documentation files (the "Software"), to deal   #
- #   in the Software without restriction, including without limitation the rights    #
- #   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
- #   copies of the Software, and to permit persons to whom the Software is           #
- #   furnished to do so, subject to the following conditions:                        #
- #                                                                                   #
- #   The above copyright notice and this permission notice shall be included in all  #
- #   copies or substantial portions of the Software.                                 #
- #                                                                                   #
- #   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
- #   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
- #   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
- #   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
- #   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
- #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
- #   SOFTWARE.                                                                       #
- #####################################################################################
+#####################################################################################
+# MIT License                                                                       #
+#                                                                                   #
+# Copyright (C) 2018 Sungwon Kim                                                    #
+#                                                                                   #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy    #
+#   of this software and associated documentation files (the "Software"), to deal   #
+#   in the Software without restriction, including without limitation the rights    #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell       #
+#   copies of the Software, and to permit persons to whom the Software is           #
+#   furnished to do so, subject to the following conditions:                        #
+#                                                                                   #
+#   The above copyright notice and this permission notice shall be included in all  #
+#   copies or substantial portions of the Software.                                 #
+#                                                                                   #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,        #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE     #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER          #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,   #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   #
+#   SOFTWARE.                                                                       #
+#####################################################################################
 
 from flow_wavenet.data import LJspeechDataset, collate_fn, collate_fn_synthesize
 from flow_wavenet.model import Flowavenet
@@ -37,6 +37,7 @@ import argparse
 import time
 import json
 import gc
+
 
 def build_model():
     pretrained = True if args.load_step > 0 else False
@@ -144,10 +145,10 @@ def save_checkpoint(model, optimizer, scheduler, global_step, global_epoch):
     checkpoint_path = os.path.join(args.save, args.model_name, "checkpoint_step{:09d}.pth".format(global_step))
     optimizer_state = optimizer.state_dict()
     scheduler_state = scheduler.state_dict()
-    torch.save({"state_dict": model.state_dict(),
-                "optimizer": optimizer_state,
-                "scheduler": scheduler_state,
-                "global_step": global_step,
+    torch.save({"state_dict":   model.state_dict(),
+                "optimizer":    optimizer_state,
+                "scheduler":    scheduler_state,
+                "global_step":  global_step,
                 "global_epoch": global_epoch}, checkpoint_path)
 
 
@@ -180,13 +181,14 @@ def load_checkpoint(step, model, optimizer, scheduler):
 
     return model, optimizer, scheduler
 
+
 if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
     np.set_printoptions(precision=4)
     torch.manual_seed(1111)
 
     parser = argparse.ArgumentParser(description='Train FloWaveNet of LJSpeech',
-                                    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--data_path', type=str, default='../data/ljspeech/', help='Dataset Path')
     parser.add_argument('--sample_path', type=str, default='../samples', help='Sample Path')
     parser.add_argument('--save', '-s', type=str, default='../params', help='Folder to save checkpoints.')
@@ -230,12 +232,12 @@ if __name__ == "__main__":
     train_dataset = LJspeechDataset(args.data_path, True, 0.1)
     test_dataset = LJspeechDataset(args.data_path, False, 0.1)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, collate_fn=collate_fn,
-                            num_workers=args.num_workers, pin_memory=True)
+                              num_workers=args.num_workers, pin_memory=True)
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, collate_fn=collate_fn,
-                            num_workers=args.num_workers, pin_memory=True)
+                             num_workers=args.num_workers, pin_memory=True)
     synth_loader = DataLoader(test_dataset, batch_size=1, collate_fn=collate_fn_synthesize,
-                            num_workers=args.num_workers, pin_memory=True)
-                          
+                              num_workers=args.num_workers, pin_memory=True)
+
     model = build_model()
     model.to(device)
 
