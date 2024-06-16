@@ -79,6 +79,7 @@ python train_ddpm.py \
 --beta_end=0.0195 \
 --batch_size=40 \
 --quick_test=0
+
 ```
 
 --beta_schedule=scaled_linear \
