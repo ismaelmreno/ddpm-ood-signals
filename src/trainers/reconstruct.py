@@ -16,6 +16,7 @@ from torch.nn.functional import pad
 
 from src.data.get_train_and_val_dataloader import get_training_data_loader
 from src.utils.simplex_noise import generate_simplex_noise
+from src.utils.visualize_rf import visualize_original_vs_reconstructed
 
 from .base import BaseTrainer
 
@@ -33,6 +34,7 @@ class Reconstruct(BaseTrainer):
         self.out_dir = self.run_dir / "ood"
         self.out_dir.mkdir(exist_ok=True)
         self.in_channels = args.in_channels
+        self.model_type = args.model_type
 
         # set up loaders
         self.val_loader = get_training_data_loader(
@@ -106,53 +108,13 @@ class Reconstruct(BaseTrainer):
                 signals = self.vqvae_model.encode_stage_2_inputs(signals_original)
                 if self.do_latent_pad:
                     signals = F.pad(input=signals, pad=self.latent_pad, mode="constant", value=0)
-                # loop over different values to reconstruct from
-                for t_start in pndm_start_points:
-                    with autocast(enabled=True):
-                        start_timesteps = torch.Tensor([t_start] * signals.shape[0]).long()
 
-                        # noise signals
-                        if self.simplex_noise:
-                            noise = generate_simplex_noise(
-                                self.simplex,
-                                x=signals,
-                                t=start_timesteps,
-                                in_channels=signals.shape[1],
-                            )
-                        else:
-                            noise = torch.randn_like(signals).to(self.device)
+                if self.model_type == "autoencoder":
 
-                        reconstructions = pndm_scheduler.add_noise(
-                            original_samples=signals * self.b_scale,
-                            noise=noise,
-                            timesteps=start_timesteps,
-                        )
-                        # perform reconstruction
-                        for step in pndm_timesteps[pndm_timesteps <= t_start]:
-                            timesteps = torch.Tensor([step] * signals.shape[0]).long()
-                            model_output = self.model(
-                                reconstructions, timesteps=timesteps.to(self.device)
-                            )
-                            # 2. compute previous signal: x_t -> x_t-1
-                            reconstructions, _ = pndm_scheduler.step(
-                                model_output, step, reconstructions
-                            )
-                    # try clamping the reconstructions
-                    if self.do_latent_pad:
-                        reconstructions = F.pad(
-                            input=reconstructions,
-                            pad=self.inverse_latent_pad,
-                            mode="constant",
-                            value=0,
-                        )
-                    reconstructions = self.vqvae_model.decode_stage_2_outputs(reconstructions)
-                    reconstructions = reconstructions / self.b_scale
-                    # reconstructions.clamp_(0, 1) # FFUUUUKKKKK
+                    reconstructions = self.model(signals)
 
                     non_batch_dims = tuple(range(signals_original.dim()))[1:]
-                    mse_metric = torch.square(signals_original - reconstructions).mean(
-                        axis=non_batch_dims
-                    )
+                    mse_metric = torch.square(signals_original - reconstructions).mean(axis=non_batch_dims)
                     for b in range(signals.shape[0]):
                         stem = b
 
@@ -160,19 +122,83 @@ class Reconstruct(BaseTrainer):
                             {
                                 "filename": stem,
                                 "type":     dataset_name,
-                                "t":        t_start.item(),
+                                "t":        0,
                                 "mse":      mse_metric[b].item(),
                             }
                         )
-                    # plot
-                    if not dist.is_initialized():
-                        from src.utils.visualize_rf import visualize_original_vs_reconstructed
+                    visualize_original_vs_reconstructed(
+                        signals_original.cpu(),
+                        reconstructions.cpu(),
+                        N=3,
+                    )
 
-                        visualize_original_vs_reconstructed(
-                            signals_original.cpu(),
-                            reconstructions.cpu(),
-                            N=3,
+
+                else:
+                    # loop over different values to reconstruct from
+                    for t_start in pndm_start_points:
+                        with autocast(enabled=True):
+                            start_timesteps = torch.Tensor([t_start] * signals.shape[0]).long()
+
+                            # noise signals
+                            if self.simplex_noise:
+                                noise = generate_simplex_noise(
+                                    self.simplex,
+                                    x=signals,
+                                    t=start_timesteps,
+                                    in_channels=signals.shape[1],
+                                )
+                            else:
+                                noise = torch.randn_like(signals).to(self.device)
+
+                            reconstructions = pndm_scheduler.add_noise(
+                                original_samples=signals * self.b_scale,
+                                noise=noise,
+                                timesteps=start_timesteps,
+                            )
+                            # perform reconstruction
+                            for step in pndm_timesteps[pndm_timesteps <= t_start]:
+                                timesteps = torch.Tensor([step] * signals.shape[0]).long()
+                                model_output = self.model(
+                                    reconstructions, timesteps=timesteps.to(self.device)
+                                )
+                                # 2. compute previous signal: x_t -> x_t-1
+                                reconstructions, _ = pndm_scheduler.step(
+                                    model_output, step, reconstructions
+                                )
+                        # try clamping the reconstructions
+                        if self.do_latent_pad:
+                            reconstructions = F.pad(
+                                input=reconstructions,
+                                pad=self.inverse_latent_pad,
+                                mode="constant",
+                                value=0,
+                            )
+                        reconstructions = self.vqvae_model.decode_stage_2_outputs(reconstructions)
+                        reconstructions = reconstructions / self.b_scale
+                        # reconstructions.clamp_(0, 1) # FFUUUUKKKKK
+
+                        non_batch_dims = tuple(range(signals_original.dim()))[1:]
+                        mse_metric = torch.square(signals_original - reconstructions).mean(
+                            axis=non_batch_dims
                         )
+                        for b in range(signals.shape[0]):
+                            stem = b
+
+                            results.append(
+                                {
+                                    "filename": stem,
+                                    "type":     dataset_name,
+                                    "t":        t_start.item(),
+                                    "mse":      mse_metric[b].item(),
+                                }
+                            )
+                        # plot
+                        # if not dist.is_initialized():
+                            # visualize_original_vs_reconstructed(
+                            #     signals_original.cpu(),
+                            #     reconstructions.cpu(),
+                            #     N=3,
+                            # )
                 t2 = time.time()
                 if dist.is_initialized():
                     print(f"{dist.get_rank()}: Took {t2 - t1}s for a batch size of {signals.shape[0]}")

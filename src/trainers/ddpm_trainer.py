@@ -73,7 +73,7 @@ class DDPMTrainer(BaseTrainer):
         epoch_step = 0
         self.model.train()
         for step, batch in progress_bar:
-            signals = self.vqvae_model.encode_stage_2_inputs(batch["signal"].to(self.device))
+            signals = self.vqvae_model.encoder(batch["signal"].to(self.device))
             # if self.do_latent_pad:
             #     with torch.no_grad():
             #         images = F.pad(input=images, pad=self.latent_pad, mode="constant", value=0)
@@ -134,7 +134,7 @@ class DDPMTrainer(BaseTrainer):
         global_val_step = self.global_step
         val_steps = 0
         for step, batch in progress_bar:
-            signals = self.vqvae_model.encode_stage_2_inputs(batch["signal"].to(self.device))
+            signals = self.vqvae_model.encoder(batch["signal"].to(self.device))
             # if self.do_latent_pad:
             #     images = F.pad(input=images, pad=self.latent_pad, mode="constant", value=0)
             self.optimizer.zero_grad(set_to_none=True)

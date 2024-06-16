@@ -6,7 +6,7 @@ from pathlib import Path
 import torch
 import torch.distributed as dist
 from generative.inferers import DiffusionInferer
-from generative.networks.nets import VQVAE
+from src.networks.vqvae_signal.convolutional_vq_vae import ConvolutionalVQVAE
 from generative.networks.schedulers import DDPMScheduler
 from torch.cuda.amp import GradScaler
 from torch.nn.parallel import DistributedDataParallel
@@ -52,7 +52,7 @@ class BaseTrainer:
                 raise FileNotFoundError(f"Cannot find VQ-VAE config {vqvae_config_path}")
             with open(vqvae_config_path, "r") as f:
                 self.vqvae_config = json.load(f)
-            self.vqvae_model = VQVAE(**self.vqvae_config)
+            self.vqvae_model = ConvolutionalVQVAE(self.vqvae_config, self.device)
             vqvae_checkpoint = torch.load(vqvae_checkpoint_path)
             self.vqvae_model.load_state_dict(vqvae_checkpoint["model_state_dict"])
             self.vqvae_model.to(self.device)
@@ -74,6 +74,17 @@ class BaseTrainer:
                 attention_levels=(False, False, True),
                 num_res_blocks=1,
                 num_head_channels=1,
+                with_conditioning=False,
+            ).to(self.device)
+        elif args.model_type == "medium":
+            self.model = DiffusionModelUNet(
+                spatial_dims=args.spatial_dimension,
+                in_channels=ddpm_channels,
+                out_channels=ddpm_channels,
+                num_channels=(64, 128, 192),
+                attention_levels=(True, True, True),
+                num_res_blocks=2,
+                num_head_channels=64,
                 with_conditioning=False,
             ).to(self.device)
         elif args.model_type == "big":
