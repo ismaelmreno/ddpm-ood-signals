@@ -43,6 +43,7 @@ class BaseTrainer:
             print(f"  {k}: {v}")
 
         # set up model
+        self.vqvae_checkpoint = args.vqvae_checkpoint
         if args.vqvae_checkpoint:
             vqvae_checkpoint_path = Path(args.vqvae_checkpoint)
             vqvae_config_path = vqvae_checkpoint_path.parent / "vqvae_config.json"
@@ -69,9 +70,9 @@ class BaseTrainer:
                 spatial_dims=args.spatial_dimension,
                 in_channels=ddpm_channels,
                 out_channels=ddpm_channels,
-                num_channels=(3, 3, 6),
-                norm_num_groups=3,
-                attention_levels=(False, False, True),
+                num_channels=(16, 32, 64),
+                norm_num_groups=1,
+                attention_levels=(False, False, False),
                 num_res_blocks=1,
                 num_head_channels=1,
                 with_conditioning=False,

@@ -2100,7 +2100,7 @@ if __name__ == "__main__":
         use_flash_attention=False,
     )
     print(model)
-    x = torch.randn(5, 2, 3000)
+    x = torch.randn(5, 2, 300)
     timesteps = torch.randn(5)
     out = model(x, timesteps)
     print(out.shape)

@@ -112,6 +112,14 @@ class ConvolutionalVQVAE(nn.Module):
     def decoder(self):
         return self._decoder
 
+    @property
+    def encode_stage_2_inputs(self):
+        return self._encoder
+
+    @property
+    def decode_stage_2_outputs(self):
+        return self._decoder
+
     def forward(self, x):
         x = x.contiguous().float()
 

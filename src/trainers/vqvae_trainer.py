@@ -49,7 +49,7 @@ class VQVAETrainer:
         config = {
             'input_features_dim':      2,  # Dimensión de las características de entrada
             'output_features_dim':     2,  # Dimensión de las características de salida
-            'num_hiddens':             128,  # Número de canales ocultos en el encoder y decoder
+            'num_hiddens':             8,  # Número de canales ocultos en el encoder y decoder
             'num_residual_layers':     2,  # Número de capas residuales
             'residual_channels':       64,  # Número de canales en las capas residuales
             'use_kaiming_normal':      True,  # Usar inicialización Kaiming normal
@@ -58,7 +58,7 @@ class VQVAETrainer:
             'output_features_filters': 2,  # Filtros de características de salida
             'augment_output_features': False,  # No aumentar las características de salida
             'num_embeddings':          512,  # Número de embeddings en el vector quantizer
-            'embedding_dim':           64,  # Dimensión de los embeddings
+            'embedding_dim':           8,  # Dimensión de los embeddings
             'commitment_cost':         0.25,  # Costo de compromiso para el vector quantizer
             'decay':                   0.99,  # Decaimiento para VectorQuantizerEMA
             'use_jitter':              True,  # Usar jitter en el decoder

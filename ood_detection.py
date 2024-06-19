@@ -89,50 +89,14 @@ def main(args):
             index=["filename"], columns=["t"], values=[plot_target]
         )
 
-    mednist_datasets = dict.fromkeys(["AbdomenCT", "BreastMRI", "ChestCT", "CXR", "Hand", "HeadCT"])
-    if "fashionmnist" in model:
-        out_data = ("MNIST", "FashionMNIST_vflip", "FashionMNIST_hflip")
-    elif "mnist" in model:
-        out_data = ("FashionMNIST", "MNIST_vflip", "MNIST_hflip")
-    elif "cifar10" in model:
-        out_data = ("SVHN", "CelebA", "CIFAR10_vflip", "CIFAR10_hflip")
-    elif "celeba" in model.lower():
-        out_data = ("CIFAR10", "SVHN", "CelebA_vflip", "CelebA_hflip")
-    elif "svhn" in model:
-        out_data = ("CIFAR10", "CelebA", "SVHN_vflip", "SVHN_hflip")
-    elif "abdomenct" in model:
-        out_data = mednist_datasets
-        del out_data["AbdomenCT"]
-    elif "breastmri" in model:
-        out_data = mednist_datasets
-        del out_data["BreastMRI"]
-    elif "cxr" in model:
-        out_data = mednist_datasets
-        del out_data["CXR"]
-    elif "chestct" in model:
-        out_data = mednist_datasets
-        del out_data["ChestCT"]
-    elif "hand" in model:
-        out_data = mednist_datasets
-        del out_data["Hand"]
-    elif "headct" in model:
-        out_data = mednist_datasets
-        del out_data["HeadCT"]
-    elif "decathlon" in model or "Task01" in model:
-        out_data = (
-            "Task02",
-            "Task03",
-            "Task04",
-            "Task05",
-            "Task06",
-            "Task07",
-            "Task08",
-            "Task09",
-            "Task10",
-        )
-
-    elif "testwave1" in model:
-        out_data = ("CommSignal3",)
+    if "CommSignal2" in model:
+        out_data = ["CommSignal3", "CommSignal5G1", "EMISignal1"]
+    elif "CommSignal3" in model:
+        out_data = ["CommSignal2", "CommSignal5G1", "EMISignal1"]
+    elif "CommSignal5G1" in model:
+        out_data = ["CommSignal2", "CommSignal3", "EMISignal1"]
+    elif "EMISignal1" in model:
+        out_data = ["CommSignal2", "CommSignal3", "CommSignal5G1"]
 
     else:
         raise ValueError(f"Unknown dataset to select for run_dir {model}")

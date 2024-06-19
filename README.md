@@ -148,132 +148,6 @@ python reconstruct.py \
 --first_n=50 \
 --first_n_val=50
 
-python reconstruct.py \
---output_dir=${output_root} \
---model_name=wavenet_CommSignal3 \
---model_type=wavenet \
---validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
---in_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
---out_ids=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
---beta_start=0.0015 \
---beta_end=0.0195 \
---num_inference_steps=100 \
---inference_skip_factor=4 \
---run_val=0 \
---run_in=1 \
---batch_size=50 \
---run_out=1 \
---first_n=50 \
---first_n_val=50
-
-python reconstruct.py \
---output_dir=${output_root} \
---model_name=wavenet_CommSignal5G1 \
---model_type=wavenet \
---validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
---in_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
---out_ids=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
---beta_start=0.0015 \
---beta_end=0.0195 \
---num_inference_steps=100 \
---inference_skip_factor=4 \
---run_val=0 \
---run_in=1 \
---batch_size=50 \
---run_out=1 \
---first_n=50 \
---first_n_val=50
-
-python reconstruct.py \
---output_dir=${output_root} \
---model_name=wavenet_EMISignal1 \
---model_type=wavenet \
---validation_h5file=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5 \
---in_ids=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5 \
---out_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
---beta_start=0.0015 \
---beta_end=0.0195 \
---num_inference_steps=100 \
---inference_skip_factor=4 \
---run_val=0 \
---run_in=1 \
---batch_size=50 \
---run_out=1 \
---first_n=50 \
---first_n_val=50
-
-
-python reconstruct.py \
---output_dir=${output_root} \
---model_name=unet_medium_CommSignal2 \
---model_type=medium \
---validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
---in_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
---out_ids=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
---beta_start=0.0015 \
---beta_end=0.0195 \
---num_inference_steps=100 \
---inference_skip_factor=4 \
---run_val=0 \
---run_in=1 \
---batch_size=50 \
---run_out=1 \
---first_n=50 \
---first_n_val=50
-
-python reconstruct.py \
---output_dir=${output_root} \
---model_name=unet_medium_CommSignal3 \
---model_type=medium \
---validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
---in_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
---out_ids=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
---beta_start=0.0015 \
---beta_end=0.0195 \
---num_inference_steps=100 \
---inference_skip_factor=4 \
---run_val=0 \
---run_in=1 \
---batch_size=50 \
---run_out=1 \
---first_n=50 \
---first_n_val=50
-
-python reconstruct.py \
---output_dir=${output_root} \
---model_name=unet_medium_CommSignal5G1 \
---model_type=medium \
---validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
---in_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
---out_ids=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
---beta_start=0.0015 \
---beta_end=0.0195 \
---num_inference_steps=100 \
---inference_skip_factor=4 \
---run_val=0 \
---run_in=1 \
---batch_size=50 \
---run_out=1 \
---first_n=50 \
---first_n_val=50
-
-python reconstruct.py \
---output_dir=${output_root} \
---model_name=unet_medium_EMISignal1 \
---model_type=medium \
---validation_h5file=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5 \
---in_ids=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5 \
---out_ids=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5,${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
---beta_start=0.0015 \
---beta_end=0.0195 \
---num_inference_steps=100 \
---inference_skip_factor=4 \
---run_val=0 \
---run_in=1 \
---batch_size=50 \
---run_out=1 \
---first_n=50 \
---first_n_val=50
 
 ```
 
@@ -296,22 +170,109 @@ or a subset of the in/out datasets with `--first_n=1000`
 ```bash
 python ood_detection.py \
 --output_dir=${output_root} \
---model_name=testwave1
+--model_name=unet_medium_CommSignal2
 ```
+
+```bash
+python ood_detection.py \
+--output_dir=${output_root} \
+--model_name=unet_medium_CommSignal3
+```
+
+```bash
+python ood_detection.py \
+--output_dir=${output_root} \
+--model_name=unet_medium_CommSignal5G1
+```
+
+```bash
+python ood_detection.py \
+--output_dir=${output_root} \
+--model_name=unet_medium_EMISignal1
+```
+
+```bash
+python ood_detection.py \
+--output_dir=${output_root} \
+--model_name=wavenet_CommSignal2
+```
+
+```bash
+python ood_detection.py \
+--output_dir=${output_root} \
+--model_name=wavenet_CommSignal3
+```
+
+```bash
+python ood_detection.py \
+--output_dir=${output_root} \
+--model_name=wavenet_CommSignal5G1
+```
+
+```bash
+python ood_detection.py \
+--output_dir=${output_root} \
+--model_name=wavenet_EMISignal1
+```
+
+
+
+
+
 
 ## Run with LDM
 
 ### Train VQVAE
 
+
+
+```bash
+python train_vqvae.py  \
+--output_dir=${output_root} \
+--model_name=vqvae_CommSignal2 \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal2_raw_data_val.h5 \
+--n_epochs=3 \
+--batch_size=8  \
+--eval_freq=100 \
+--cache_data=0  \
+--spatial_dimension=1
+```
+
+```bash
+python train_vqvae.py  \
+--output_dir=${output_root} \
+--model_name=vqvae_CommSignal3 \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
+--n_epochs=1 \
+--batch_size=8  \
+--eval_freq=100 \
+--cache_data=0  \
+--spatial_dimension=1
+```
+
+```bash
+python train_vqvae.py  \
+--output_dir=${output_root} \
+--model_name=vqvae_CommSignal5G1 \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
+--n_epochs=1 \
+--batch_size=8  \
+--eval_freq=100 \
+--cache_data=0  \
+--spatial_dimension=1
+```
 ```bash
 python train_vqvae.py  \
 --output_dir=${output_root} \
 --model_name=vqvae_EMISignal1 \
 --training_h5file=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_train.h5 \
 --validation_h5file=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5 \
---n_epochs=20 \
+--n_epochs=1 \
 --batch_size=8  \
---eval_freq=10 \
+--eval_freq=100 \
 --cache_data=0  \
 --spatial_dimension=1
 ```
@@ -341,6 +302,71 @@ python train_ddpm.py \
   --b_scale=1.0 \
   --spatial_dimension=1
 ```
+
+```bash
+python train_ddpm.py \
+  --output_dir=${output_root} \
+  --model_name=unetvqvae_CommSignal3 \
+  --vqvae_checkpoint=${output_root}/vqvae_CommSignal3/checkpoint.pth \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal3_raw_data_val.h5 \
+  --n_epochs=20 \
+  --batch_size=6 \
+  --eval_freq=25 \
+  --checkpoint_every=1 \
+  --cache_data=0  \
+  --prediction_type=epsilon \
+  --model_type=medium \
+  --beta_schedule=scaled_linear_beta \
+  --beta_start=0.0015 \
+  --beta_end=0.0195 \
+  --b_scale=1.0 \
+  --spatial_dimension=1
+```
+
+```bash
+python train_ddpm.py \
+  --output_dir=${output_root} \
+  --model_name=unetvqvae_CommSignal5G1 \
+  --vqvae_checkpoint=${output_root}/vqvae_CommSignal5G1/checkpoint.pth \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/CommSignal5G1_raw_data_val.h5 \
+  --n_epochs=20 \
+  --batch_size=6 \
+  --eval_freq=25 \
+  --checkpoint_every=1 \
+  --cache_data=0  \
+  --prediction_type=epsilon \
+  --model_type=medium \
+  --beta_schedule=scaled_linear_beta \
+  --beta_start=0.0015 \
+  --beta_end=0.0195 \
+  --b_scale=1.0 \
+  --spatial_dimension=1
+```
+
+```bash
+python train_ddpm.py \
+  --output_dir=${output_root} \
+  --model_name=unetvqvae_EMISignal1 \
+  --vqvae_checkpoint=${output_root}/vqvae_EMISignal1/checkpoint.pth \
+--training_h5file=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_train.h5 \
+--validation_h5file=${data_root}/dataset_processed/interferenceset_frame/EMISignal1_raw_data_val.h5 \
+  --n_epochs=20 \
+  --batch_size=6 \
+  --eval_freq=25 \
+  --checkpoint_every=1 \
+  --cache_data=0  \
+  --prediction_type=epsilon \
+  --model_type=medium \
+  --beta_schedule=scaled_linear_beta \
+  --beta_start=0.0015 \
+  --beta_end=0.0195 \
+  --b_scale=1.0 \
+  --spatial_dimension=1
+```
+
+
 
 ### Reconstruct data
 
